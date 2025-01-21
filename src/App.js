@@ -6,6 +6,7 @@ import Homepage from './pages/Homepage';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import RegisterAccount from './pages/RegisterAccount';
+import CreatePassword from "./pages/CreatePassword";
 import AdminDashboard from './pages/AdminDashboard';
 // import ClientDashboard from './pages/ClientDashboard';
 import Navbar from './components/Navbar'; // Import Navbar
@@ -29,6 +30,7 @@ function App() {
               <Route path="/" element={<Homepage />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<RegisterAccount />} />
+              <Route path="/create-password" element={<CreatePassword />} />
 
               {/* Inline component to determine default route based on auth */}
               <Route path="/default" element={<DefaultRedirect />} />

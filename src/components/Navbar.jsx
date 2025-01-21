@@ -189,18 +189,18 @@ const Navbar = ({ onLoginToggle }) => {
               horizontal: "center",
             }}
             sx={{
-              mt: 6,
               "& .MuiPaper-root": {
                 borderTop: ".5px solid",
                 borderRadius: "0px",
                 position: "fixed",
-                right: 0,
+
                 width: "200px",
                 maxWidth: "200px",
                 backgroundColor: "rgba(255, 255, 255, 0)",
                 backdropFilter: "blur(10px)", // Blur effect
                 color: theme.palette.text.primary,
                 mt: 4.8,
+                mr: 0,
               },
             }}
           >

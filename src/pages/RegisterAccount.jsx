@@ -5,11 +5,8 @@ import api from "../services/api";
 const RegisterAccount = () => {
   const [formData, setFormData] = useState({
     email: "",
-    password: "",
     fullName: "",
-    role: "client", // Default role
   });
-
   const [message, setMessage] = useState(""); // For success or error messages
   const [loading, setLoading] = useState(false); // Loading state for button
 
@@ -25,20 +22,20 @@ const RegisterAccount = () => {
     setLoading(true);
 
     try {
-      const response = await api.post("/auth/register", formData, {
+      const response = await api.post("/auth/register/initiate", formData, {
         headers: {
           "Content-Type": "application/json",
         },
       });
 
       setMessage(
-        `User registered successfully! Welcome, ${response.data.user.fullName}.`
+        response.data.message || "Check your email to set a password."
       );
-      setFormData({ email: "", password: "", fullName: "", role: "client" });
+      setFormData({ email: "", fullName: "" });
     } catch (error) {
       setMessage(
         error.response?.data?.error ||
-          "An error occurred while registering the user."
+          "An error occurred while initiating registration."
       );
     } finally {
       setLoading(false);
@@ -77,18 +74,6 @@ const RegisterAccount = () => {
           placeholder="Enter email"
         />
         <TextField
-          label="Password"
-          variant="outlined"
-          margin="normal"
-          required
-          fullWidth
-          type="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-          placeholder="Enter password"
-        />
-        <TextField
           label="Full Name"
           variant="outlined"
           margin="normal"
@@ -104,7 +89,7 @@ const RegisterAccount = () => {
             variant="body2"
             sx={{
               mt: 1,
-              color: message.includes("successfully") ? "green" : "red",
+              color: message.includes("Check your email") ? "green" : "red",
             }}
           >
             {message}
@@ -118,7 +103,7 @@ const RegisterAccount = () => {
           sx={{ mt: 3, mb: 2 }}
           disabled={loading}
         >
-          {loading ? "Registering..." : "Register"}
+          {loading ? "Processing..." : "Register"}
         </Button>
       </Box>
     </Container>
