@@ -8,48 +8,94 @@ export function AuthProvider({ children }) {
   const [auth, setAuth] = useState({
     isAuthenticated: !!localStorage.getItem("token"),
     role: localStorage.getItem("role") || null,
+    requestId: localStorage.getItem("requestId")
+      ? parseInt(localStorage.getItem("requestId"), 10) // Parse to int
+      : null,
   });
 
   const [shouldRefreshData, setShouldRefreshData] = useState(false);
 
+  // LOGIN
   const login = async (email, password) => {
     try {
       const response = await api.post("/auth/login", { email, password });
-      const { token } = response.data;
-      const decoded = jwtDecode(token);
+      // Expecting { token, requestId, user } in response
+      const { token, requestId, user } = response.data;
+
+      // Store data in localStorage
       localStorage.setItem("token", token);
-      localStorage.setItem("role", decoded.role);
-      setAuth({ isAuthenticated: true, role: decoded.role });
-      setShouldRefreshData(true); // Trigger refresh after login
+      localStorage.setItem("role", user.role);
+      localStorage.setItem("requestId", requestId);
+
+      // Update context state
+      setAuth({
+        isAuthenticated: true,
+        role: user.role,
+        requestId: parseInt(requestId, 10), // Convert to integer
+      });
+
+      setShouldRefreshData(true);
     } catch (error) {
-      throw error; // Allows error to propagate for handling in LoginPage
+      console.error("Login error:", error);
+      throw error; // Rethrow so caller can handle it (e.g., show error message)
     }
   };
 
+  // LOGOUT
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
-    setAuth({ isAuthenticated: false, role: null });
+    localStorage.removeItem("requestId");
+
+    setAuth({
+      isAuthenticated: false,
+      role: null,
+      requestId: null,
+    });
     setShouldRefreshData(false);
+
+    // Optionally redirect
     window.location.href = "/";
   };
 
+  // ON APP INIT
   useEffect(() => {
     const token = localStorage.getItem("token");
+    const role = localStorage.getItem("role");
+    const storedRequestId = localStorage.getItem("requestId");
+
     if (token) {
       try {
+        // Decode token to get user info
         const decoded = jwtDecode(token);
-        setAuth({ isAuthenticated: true, role: decoded.role });
+
+        // Convert requestId from localStorage to an integer
+        const numericRequestId = storedRequestId
+          ? parseInt(storedRequestId, 10)
+          : null;
+
+        setAuth({
+          isAuthenticated: true,
+          role: decoded.role || role,
+          requestId: isNaN(numericRequestId) ? null : numericRequestId,
+        });
       } catch (error) {
         console.error("Invalid token, logging out:", error);
         logout(); // Clear invalid tokens
       }
     }
-  }, []); // Run only once when the app initializes
+  }, []);
 
+  // RENDER
   return (
     <AuthContext.Provider
-      value={{ auth, login, logout, shouldRefreshData, setShouldRefreshData }}
+      value={{
+        auth,
+        login,
+        logout,
+        shouldRefreshData,
+        setShouldRefreshData,
+      }}
     >
       {children}
     </AuthContext.Provider>

@@ -8,8 +8,9 @@ import Login from './pages/Login';
 import RegisterAccount from './pages/RegisterAccount';
 import CreatePassword from "./pages/CreatePassword";
 import AdminDashboard from './pages/AdminDashboard';
-// import ClientDashboard from './pages/ClientDashboard';
+import ClientDashboard from './pages/ClientDashboard';
 import Navbar from './components/Navbar'; // Import Navbar
+
 
 function App() {
   return (
@@ -21,11 +22,10 @@ function App() {
             v7_relativeSplatPath: true,
           }}
         >
-          {/* Navbar will always render */}
           <Navbar />
 
           {/* Routes */}
-          <div style={{ marginTop: '55px' /* Matches Navbar height */ }}>
+          <div style={{ marginTop: '55px' /* current Navbar height */ }}>
             <Routes>
               <Route path="/" element={<Homepage />} />
               <Route path="/login" element={<Login />} />
@@ -50,7 +50,7 @@ function App() {
                 path="/client"
                 element={
                   <ProtectedRoute requiredRole="client">
-                    
+                    <ClientDashboard />
                   </ProtectedRoute>
                 }
               />
