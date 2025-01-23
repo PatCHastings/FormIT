@@ -200,7 +200,6 @@ const Navbar = ({ onLoginToggle }) => {
                 backdropFilter: "blur(10px)", // Blur effect
                 color: theme.palette.text.primary,
                 mt: 4.8,
-                mr: 0,
               },
             }}
           >

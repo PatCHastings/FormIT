@@ -18,24 +18,4 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-export const getClient = async () => {
-    const response = await api.get('/clients');
-    return response.data;
-  };
-  
-  export const createClient = async (client) => {
-    const response = await api.post('/clients', client);
-    return response.data;
-  };
-  
-  export const updateClient = async (clientId, updatedData) => {
-    const response = await api.put(`/clients/${clientId}`, updatedData);
-    return response.data;
-  };
-  
-  export const deleteClient = async (clientId) => {
-    const response = await api.delete(`/clients/${clientId}`);
-    return response.data;
-  };
-
 export default api;

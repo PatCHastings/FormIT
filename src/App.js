@@ -1,16 +1,16 @@
-import React, { useContext } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import ThemeContextProvider from './context/themeContext';
-import { AuthProvider, AuthContext } from './context/AuthContext';
-import Homepage from './pages/Homepage';
-import ProtectedRoute from './components/ProtectedRoute';
-import Login from './pages/Login';
-import RegisterAccount from './pages/RegisterAccount';
+import React, { useContext } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import ThemeContextProvider from "./context/themeContext";
+import { AuthProvider, AuthContext } from "./context/AuthContext";
+import Homepage from "./pages/Homepage";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Login from "./pages/Login";
+import RegisterAccount from "./pages/RegisterAccount";
 import CreatePassword from "./pages/CreatePassword";
-import AdminDashboard from './pages/AdminDashboard';
-import ClientDashboard from './pages/ClientDashboard';
-import Navbar from './components/Navbar'; // Import Navbar
-
+import AdminDashboard from "./pages/AdminDashboard";
+import ClientForm from "./pages/ClientForm";    // Existing questionnaire form
+import ClientDashboard from "./pages/ClientDashboard"; // <-- Import your new dashboard
+import Navbar from "./components/Navbar";
 
 function App() {
   return (
@@ -25,7 +25,7 @@ function App() {
           <Navbar />
 
           {/* Routes */}
-          <div style={{ marginTop: '55px' /* current Navbar height */ }}>
+          <div style={{ marginTop: "55px" /* current Navbar height */ }}>
             <Routes>
               <Route path="/" element={<Homepage />} />
               <Route path="/login" element={<Login />} />
@@ -45,12 +45,22 @@ function App() {
                 }
               />
 
-              {/* Client Dashboard */}
+              {/* New: Client Dashboard */}
               <Route
-                path="/client"
+                path="/client/dashboard"
                 element={
                   <ProtectedRoute requiredRole="client">
                     <ClientDashboard />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Client Form (Questionnaire) */}
+              <Route
+                path="/questionnaire"
+                element={
+                  <ProtectedRoute requiredRole="client">
+                    <ClientForm />
                   </ProtectedRoute>
                 }
               />
@@ -73,8 +83,8 @@ function DefaultRedirect() {
     }
 
     // Redirect based on role
-    if (auth.role === 'admin') return <Navigate to="/admin" />;
-    if (auth.role === 'client') return <Navigate to="/client" />;
+    if (auth.role === "admin") return <Navigate to="/admin" />;
+    if (auth.role === "client") return <Navigate to="/client/dashboard" />;
 
     return <Navigate to="/" />;
   };
