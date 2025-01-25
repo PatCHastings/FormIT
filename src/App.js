@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import ThemeContextProvider from "./context/themeContext";
-import { AuthProvider, AuthContext } from "./context/AuthContext";
+import { AuthContext } from "./context/AuthContext";
 import Homepage from "./pages/Homepage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./pages/Login";
@@ -15,70 +14,67 @@ import AdminUserForm from "./pages/AdminUserForm";
 
 function App() {
   return (
-    <ThemeContextProvider>
-      <AuthProvider>
-        <BrowserRouter
-          future={{
-            v7_startTransition: true,
-            v7_relativeSplatPath: true,
-          }}
-        >
-          <Navbar />
+    <BrowserRouter
+      future={{
+        v7_startTransition: true,
+        v7_relativeSplatPath: true,
+      }}
+    >
+      <Navbar />
 
-          {/* Routes */}
-          <div style={{ marginTop: "55px" /* current Navbar height */ }}>
-            <Routes>
-              <Route path="/" element={<Homepage />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<RegisterAccount />} />
-              <Route path="/create-password" element={<CreatePassword />} />
+      {/* Routes */}
+      <div style={{ marginTop: "55px" /* current Navbar height */ }}>
+        <Routes>
+          <Route path="/" element={<Homepage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<RegisterAccount />} />
+          <Route path="/create-password" element={<CreatePassword />} />
 
-              {/* Inline component to determine default route based on auth */}
-              <Route path="/default" element={<DefaultRedirect />} />
+          {/* Inline component to determine default route based on auth */}
+          <Route path="/default" element={<DefaultRedirect />} />
 
-              {/* Admin Dashboard */}
-              <Route
-                path="/admin"
-                element={
-                  <ProtectedRoute requiredRole="admin">
-                    <AdminDashboard />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/admin/user-form/:clientId"
-                element={
-                  <ProtectedRoute requiredRole="admin">
-                    <AdminUserForm />
-                  </ProtectedRoute>
-                }
-              />
+          {/* Admin Dashboard */}
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/user-form/:clientId"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <AdminUserForm />
+              </ProtectedRoute>
+            }
+          />
 
 
-              {/* Client Dashboard */}
-              <Route
-                path="/client"
-                element={
-                  <ProtectedRoute requiredRole="client">
-                    <ClientDashboard />
-                  </ProtectedRoute>
-                }
-              />
-
-              {/* Client Form (Questionnaire) */}
-              <Route
-                path="/questionnaire"
-                element={
-                  <ProtectedRoute requiredRole="client">
-                    <ClientForm />
-                  </ProtectedRoute>
-                }
-              />
-            </Routes>
-          </div>
-        </BrowserRouter>
-      </AuthProvider>
-    </ThemeContextProvider>
+          {/* Client Dashboard */}
+          <Route
+            path="/client"
+            element={
+              <ProtectedRoute requiredRole="client">
+                <ClientDashboard />
+              </ProtectedRoute>
+            }
+          />
+    
+          
+          {/* Client Form (Questionnaire) */}
+          <Route
+            path="/questionnaire"
+            element={
+              <ProtectedRoute requiredRole="client">
+                <ClientForm />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }
 
@@ -94,7 +90,7 @@ function DefaultRedirect() {
 
     // Redirect based on role
     if (auth.role === "admin") return <Navigate to="/admin" />;
-    if (auth.role === "client") return <Navigate to="/client/dashboard" />;
+    if (auth.role === "client") return <Navigate to="/client" />;
 
     return <Navigate to="/" />;
   };
