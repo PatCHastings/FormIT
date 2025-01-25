@@ -22,6 +22,7 @@ const RegisterAccount = () => {
     setLoading(true);
 
     try {
+      console.log("Submitting formData:", formData);
       const response = await api.post("/auth/register/initiate", formData, {
         headers: {
           "Content-Type": "application/json",

@@ -8,9 +8,6 @@ export function AuthProvider({ children }) {
   const [auth, setAuth] = useState({
     isAuthenticated: !!localStorage.getItem("token"),
     role: localStorage.getItem("role") || null,
-    requestId: localStorage.getItem("requestId")
-      ? parseInt(localStorage.getItem("requestId"), 10) // Parse to int
-      : null,
   });
 
   const [shouldRefreshData, setShouldRefreshData] = useState(false);
@@ -19,19 +16,17 @@ export function AuthProvider({ children }) {
   const login = async (email, password) => {
     try {
       const response = await api.post("/auth/login", { email, password });
-      // Expecting { token, requestId, user } in response
-      const { token, requestId, user } = response.data;
+      // Expecting { token, user } in response
+      const { token, user } = response.data;
 
       // Store data in localStorage
       localStorage.setItem("token", token);
       localStorage.setItem("role", user.role);
-      localStorage.setItem("requestId", requestId);
 
       // Update context state
       setAuth({
         isAuthenticated: true,
         role: user.role,
-        requestId: parseInt(requestId, 10), // Convert to integer
       });
 
       setShouldRefreshData(true);
@@ -45,12 +40,10 @@ export function AuthProvider({ children }) {
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("role");
-    localStorage.removeItem("requestId");
 
     setAuth({
       isAuthenticated: false,
       role: null,
-      requestId: null,
     });
     setShouldRefreshData(false);
 
@@ -62,22 +55,15 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const token = localStorage.getItem("token");
     const role = localStorage.getItem("role");
-    const storedRequestId = localStorage.getItem("requestId");
 
     if (token) {
       try {
         // Decode token to get user info
         const decoded = jwtDecode(token);
 
-        // Convert requestId from localStorage to an integer
-        const numericRequestId = storedRequestId
-          ? parseInt(storedRequestId, 10)
-          : null;
-
         setAuth({
           isAuthenticated: true,
           role: decoded.role || role,
-          requestId: isNaN(numericRequestId) ? null : numericRequestId,
         });
       } catch (error) {
         console.error("Invalid token, logging out:", error);

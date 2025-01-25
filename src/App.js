@@ -11,6 +11,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import ClientForm from "./pages/ClientForm";    // Existing questionnaire form
 import ClientDashboard from "./pages/ClientDashboard"; // <-- Import your new dashboard
 import Navbar from "./components/Navbar";
+import AdminUserForm from "./pages/AdminUserForm";
 
 function App() {
   return (
@@ -44,10 +45,19 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-
-              {/* New: Client Dashboard */}
               <Route
-                path="/client/dashboard"
+                path="/admin/user-form/:clientId"
+                element={
+                  <ProtectedRoute requiredRole="admin">
+                    <AdminUserForm />
+                  </ProtectedRoute>
+                }
+              />
+
+
+              {/* Client Dashboard */}
+              <Route
+                path="/client"
                 element={
                   <ProtectedRoute requiredRole="client">
                     <ClientDashboard />

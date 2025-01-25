@@ -15,117 +15,44 @@ import api from "../services/api";
 
 const ClientForm = () => {
   const { auth } = useContext(AuthContext);
-  const requestId = auth?.requestId;
 
-  const [steps, setSteps] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [fetchError, setFetchError] = useState(null);
-
-  const [completedSteps, setCompletedSteps] = useState([]);
-  const [currentStep, setCurrentStep] = useState(0);
-  const [answers, setAnswers] = useState({});
-  const [error] = useState(false);
+  const [steps, setSteps] = useState([]); // Wizard steps
+  const [loading, setLoading] = useState(true); // Loading state
+  const [fetchError, setFetchError] = useState(null); // Error state
+  const [completedSteps, setCompletedSteps] = useState([]); // Track completed steps
+  const [currentStep, setCurrentStep] = useState(0); // Current step in the form
+  const [answers, setAnswers] = useState({}); // Store user answers
+  const [requestId, setRequestId] = useState(null); // Dynamically assigned requestId
 
   const location = useLocation();
 
-  // Parse serviceType from query string: e.g. /questionnaire?serviceType=new_app
+  // Parse serviceType from query string: e.g. /questionnaire?serviceType=website_development
   const serviceType =
     new URLSearchParams(location.search).get("serviceType") || "";
 
   // -------------------------
-  // Fetch wizard steps and answers
+  // Fetch wizard steps based on serviceType
   // -------------------------
   useEffect(() => {
-    if (!requestId) {
-      setFetchError("No requestId available. Please log in again.");
-      setLoading(false);
-      return;
-    }
-
-    const fetchData = async () => {
+    const fetchSteps = async () => {
       try {
-        // Use serviceType if present
-        const wizardUrl = serviceType
-          ? `/wizard?serviceType=${serviceType}`
-          : "/wizard";
-
-        const [wizardResponse, answersResponse] = await Promise.all([
-          api.get(wizardUrl),
-          api.get(`/answers?requestId=${requestId}`),
-        ]);
-
-        const fetchedSteps = wizardResponse.data;
-        const completedAnswers = answersResponse.data.completedAnswers || [];
-
-        // Map questionId -> answerText
-        const answersMap = completedAnswers.reduce((acc, answer) => {
-          acc[answer.questionId] = answer.answerText;
-          return acc;
-        }, {});
-
-        // Normalize steps
-        const normalizedSteps = fetchedSteps.map((step) => ({
-          id: step.id,
-          title: step.title,
-          categories: step.categories.map((category) => ({
-            id: category.id,
-            title: category.title,
-            questions: category.questions.map((question) => ({
-              id: question.id,
-              questionText: question.questionText,
-              questionType: question.questionType,
-              isRequired: question.isRequired,
-              helpText: question.helpText,
-            })),
-          })),
-        }));
-
-        // Compute completed steps
-        const computedStepsCompleted = normalizedSteps
-          .map((step, stepIndex) => {
-            const stepQuestionIds = step.categories.flatMap((cat) =>
-              cat.questions.map((q) => q.id)
-            );
-            const allAnswered = stepQuestionIds.every((qid) =>
-              Object.keys(answersMap).includes(qid.toString())
-            );
-            return allAnswered ? stepIndex : null;
-          })
-          .filter((index) => index !== null);
-
-        setSteps(normalizedSteps);
-        setAnswers(answersMap);
-        setCompletedSteps(computedStepsCompleted);
-        setLoading(false);
+        const response = await api.get(`/wizard?serviceType=${serviceType}`);
+        setSteps(response.data);
       } catch (err) {
-        console.error("Error fetching data:", err);
-        setFetchError("Failed to load data.");
+        setFetchError("Failed to fetch wizard steps. Please try again.");
+        console.error(err);
+      } finally {
         setLoading(false);
       }
     };
 
-    fetchData();
-  }, [requestId, serviceType]);
+    fetchSteps();
+  }, [serviceType]);
 
   // -------------------------
-  // Handle input changes
-  // -------------------------
-  const handleInputChange = (questionId, value) => {
-    setAnswers((prev) => ({
-      ...prev,
-      [questionId]: value,
-    }));
-  };
-
-  // -------------------------
-  // Submit answers
+  // Submit answers and create request dynamically if needed
   // -------------------------
   const handleSubmit = async () => {
-    if (!requestId) {
-      console.error("Cannot submit answers without a valid requestId.");
-      return;
-    }
-
     const currentStepData = steps[currentStep];
     if (!currentStepData) return;
 
@@ -147,10 +74,16 @@ const ClientForm = () => {
     );
 
     try {
-      await api.post("/answers", {
-        requestId,
+      const response = await api.post("/answers", {
+        requestId, // Use existing requestId or let the backend create one
         answers: formattedAnswers,
+        serviceType, // Pass serviceType for new requests
       });
+
+      const newRequestId = response.data.requestId;
+      if (!requestId) {
+        setRequestId(newRequestId); // Update context with new requestId
+      }
 
       const allAnswered = currentStepData.categories
         .flatMap((cat) => cat.questions.map((q) => q.id))
@@ -228,15 +161,10 @@ const ClientForm = () => {
                   placeholder="Enter your answer"
                   value={answers[question.id] || ""}
                   onChange={(e) =>
-                    handleInputChange(question.id, e.target.value)
-                  }
-                  error={error && question.isRequired && !answers[question.id]}
-                  helperText={
-                    error &&
-                    question.isRequired &&
-                    !answers[question.id]?.trim()
-                      ? "This field is required."
-                      : ""
+                    setAnswers((prev) => ({
+                      ...prev,
+                      [question.id]: e.target.value,
+                    }))
                   }
                 />
               </ListItem>
