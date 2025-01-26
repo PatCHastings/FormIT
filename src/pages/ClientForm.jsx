@@ -79,14 +79,27 @@ const ClientForm = () => {
         response.data.completedAnswers.forEach(({ questionId, answerText }) => {
           fetchedAnswers[questionId] = answerText;
         });
+
         setAnswers(fetchedAnswers);
+
+        // Prepopulate completedSteps based on fetched answers
+        const completed = steps
+          .map((step, index) => {
+            const allAnswered = step.categories
+              .flatMap((cat) => cat.questions.map((q) => q.id))
+              .every((qid) => fetchedAnswers[qid]?.trim());
+            return allAnswered ? index : null;
+          })
+          .filter((index) => index !== null);
+
+        setCompletedSteps(completed);
       } catch (error) {
         console.error("Error fetching completed answers:", error);
       }
     };
 
     fetchAnswers();
-  }, [requestId]);
+  }, [requestId, steps]);
 
   // 3) Handle Submit
   //    - Only create a request if there is at least one non-empty answer
