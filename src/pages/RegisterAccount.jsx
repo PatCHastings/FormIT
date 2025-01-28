@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTheme } from "@mui/material/styles";
 import { Container, Typography, Box, TextField, Button } from "@mui/material";
 import api from "../services/api";
 
@@ -9,6 +10,7 @@ const RegisterAccount = () => {
   });
   const [message, setMessage] = useState(""); // For success or error messages
   const [loading, setLoading] = useState(false); // Loading state for button
+  const theme = useTheme();
 
   // Handle input changes
   const handleChange = (e) => {
@@ -99,9 +101,18 @@ const RegisterAccount = () => {
         <Button
           type="submit"
           fullWidth
-          variant="contained"
+          variant="outlined"
           color="primary"
-          sx={{ mt: 3, mb: 2 }}
+          sx={{
+            mt: 3,
+            mb: 2,
+            color: theme.palette.primary.main, // Use primary color
+            borderColor: theme.palette.primary.main,
+            "&:hover": {
+              backgroundColor: theme.palette.primary.main,
+              color: theme.palette.background.default,
+            },
+          }}
           disabled={loading}
         >
           {loading ? "Processing..." : "Register"}

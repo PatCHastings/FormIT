@@ -1,4 +1,5 @@
 import React, { useState, useContext } from "react";
+import { useTheme } from "@mui/material/styles";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +11,7 @@ function Login() {
   const [error, setError] = useState("");
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
+  const theme = useTheme();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -79,9 +81,18 @@ function Login() {
         <Button
           type="submit"
           fullWidth
-          variant="contained"
+          variant="outlined"
           color="primary"
-          sx={{ mt: 3, mb: 2 }}
+          sx={{
+            mt: 3,
+            mb: 2,
+            color: theme.palette.primary.main, // Use primary color
+            borderColor: theme.palette.primary.main,
+            "&:hover": {
+              backgroundColor: theme.palette.primary.main,
+              color: theme.palette.background.default,
+            },
+          }}
         >
           Login
         </Button>

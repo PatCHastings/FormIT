@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Typography, Button, Grid } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "@mui/material/styles";
 
 const services = [
   {
@@ -62,6 +63,7 @@ const services = [
 
 const ClientDashboard = () => {
   const navigate = useNavigate();
+  const theme = useTheme();
 
   const handleSelectService = (serviceType) => {
     // Navigate to the question flow with a query param or route param
@@ -78,8 +80,18 @@ const ClientDashboard = () => {
         {services.map((service) => (
           <Grid item xs={12} sm={6} md={4} key={service.key}>
             <Button
-              variant="contained"
+              variant="outlined"
               onClick={() => handleSelectService(service.key)}
+              size="large"
+              sx={{
+                color: theme.palette.primary.main,
+                borderColor: theme.palette.primary.main,
+                borderRadius: "50px",
+                "&:hover": {
+                  backgroundColor: theme.palette.primary.main,
+                  color: theme.palette.background.default,
+                },
+              }}
             >
               {service.title}
             </Button>

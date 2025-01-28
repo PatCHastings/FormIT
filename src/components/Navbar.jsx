@@ -71,9 +71,9 @@ const Navbar = ({ onLoginToggle }) => {
           top: 0,
           left: 0,
           width: "100%",
-          height: isHidden ? "55px" : "0", // Ensure hover detection area is active
-          zIndex: 999, // Below Navbar's zIndex
-          backgroundColor: "transparent", // Keep it invisible
+          height: isHidden ? "55px" : "0",
+          zIndex: 999,
+          backgroundColor: "transparent",
         }}
         onMouseEnter={() => setIsHovered(true)} // Show Navbar on hover
         onMouseLeave={() => setIsHovered(false)} // Reapply hidden logic on leave
@@ -146,6 +146,7 @@ const Navbar = ({ onLoginToggle }) => {
                 marginRight: "1rem",
                 textTransform: "none",
                 border: "1px solid transparent",
+                borderRadius: "50px",
                 "&:hover": {
                   color: hoverColor,
                   backgroundColor: "transparent",
@@ -193,10 +194,9 @@ const Navbar = ({ onLoginToggle }) => {
                 borderTop: ".5px solid",
                 borderRadius: "0px",
                 position: "fixed",
-
                 width: "200px",
                 maxWidth: "200px",
-                backgroundColor: "rgba(255, 255, 255, 0)",
+                backgroundColor: "transparent",
                 backdropFilter: "blur(10px)", // Blur effect
                 color: theme.palette.text.primary,
                 mt: 4.8,
