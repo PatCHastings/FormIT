@@ -97,7 +97,7 @@ const Navbar = ({ onLoginToggle }) => {
           backdropFilter: "blur(6px)", // Blur effect
           color: theme.palette.text.primary,
           borderBottom: isHovered ? `.5px solid` : "none",
-          transition: "top 0.3s, background-color 0.3s, border-bottom 0.3s", // Smooth transitions
+          transition: "top 0.3s, background-color 0.3s, border-bottom 0.3s", 
         }}
         onMouseEnter={() => setIsHovered(true)} // Prevent hiding when hovering over Navbar
         onMouseLeave={() => setIsHovered(false)} // Allow hiding when leaving Navbar

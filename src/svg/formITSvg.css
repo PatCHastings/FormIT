@@ -1,0 +1,14 @@
+.form-it-svg {
+  cursor: pointer;
+  transition: filter 0.3s ease, transform 0.3s ease;
+}
+
+.form-it-svg.hovered {
+  filter: drop-shadow(0 0 15px rgba(238, 162, 21, 0.8));
+  transform: scale(1.05); /* Slight zoom effect */
+}
+
+.form-it-svg.clicked {
+  filter: drop-shadow(0 0 20px rgba(52, 230, 221, 1));
+  transform: scale(1.1); /* Slightly larger zoom when clicked */
+}

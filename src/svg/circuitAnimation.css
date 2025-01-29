@@ -1,0 +1,57 @@
+.hide-svg {
+  opacity: 0;
+  visibility: hidden;
+  position: absolute;
+
+  z-index: -1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.show-svg {
+  opacity: 1;
+  visibility: visible;
+  position: absolute;
+
+  z-index: -1;
+  transition: opacity 0.3s ease-in-out;
+}
+
+@keyframes draw {
+  from {
+    stroke-dasharray: 0, 300;
+    stroke-dashoffset: 300;
+  }
+  to {
+    stroke-dasharray: 300, 0;
+    stroke-dashoffset: 0;
+  }
+}
+
+.animate-path {
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 300;
+  stroke-dashoffset: 300;
+  animation: draw 2s ease-out forwards;
+}
+
+.delay-1 {
+  animation-delay: 0.5s;
+}
+
+.delay-2 {
+  animation-delay: 1s;
+}
+
+.delay-3 {
+  animation-delay: 1.5s;
+}
+
+.fade-stroke path {
+  transition: stroke 2s ease-in-out;
+}
+
+.fade-icon path {
+  animation-delay: 2s;
+}

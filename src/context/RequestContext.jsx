@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext } from "react";
-import api from "../services/api"; // your axios or fetch wrapper
+import api from "../services/api";
 
 export const RequestsContext = createContext(null);
 

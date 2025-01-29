@@ -51,7 +51,6 @@ function App() {
             }
           />
 
-
           {/* Client Dashboard */}
           <Route
             path="/client"
@@ -61,8 +60,6 @@ function App() {
               </ProtectedRoute>
             }
           />
-    
-          
           {/* Client Form (Questionnaire) */}
           <Route
             path="/questionnaire"

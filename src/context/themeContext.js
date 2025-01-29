@@ -37,7 +37,9 @@ const ThemeContextProvider = ({ children }) => {
             : "#24232200",
         },
         windows: {
-          primary: mode === "light" ? "#ffffff" : "#1b1b1a",
+          primary: mode === "light"
+            ? "#fff" // 50% transparency
+            : "#1212127e", // 50% transparency
         },
         components: {
           MuiButton: {

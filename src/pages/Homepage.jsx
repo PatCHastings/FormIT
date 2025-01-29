@@ -13,6 +13,8 @@ import {
   Grid,
 } from "@mui/material";
 import { useInView } from "react-intersection-observer";
+import FormITSvg from "../svg/formITsvg";
+import CircuitAnimation from "../svg/circuitAnimation";
 
 function Homepage() {
   const navigate = useNavigate();
@@ -21,6 +23,8 @@ function Homepage() {
   const [animateTitle, setAnimateTitle] = useState(false);
   const [animateDescription, setAnimateDescription] = useState(false);
   const [animateButton, setAnimateButton] = useState(false);
+  const [hasStarted, setHasStarted] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
 
   // Intersection Observer hooks
   const { ref: heroRef, inView: heroInView } = useInView({
@@ -92,6 +96,13 @@ function Homepage() {
     }
   }, [heroInView]);
 
+  const handleClick = () => {
+    if (!hasStarted) {
+      setIsVisible(false); // Hide Typography
+      setHasStarted(true); // Mark animation as started
+    }
+  };
+
   return (
     <div>
       {/* Hero Section */}
@@ -99,7 +110,7 @@ function Homepage() {
         <Box
           component="main"
           sx={{
-            minHeight: "80vh",
+            minHeight: "100vh",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
@@ -113,22 +124,49 @@ function Homepage() {
               sx={{
                 p: 6,
                 textAlign: "center",
+                backgroundColor: "transparent",
               }}
             >
               {/* Title */}
-              <Fade in={animateTitle} timeout={800}>
-                <Typography
-                  variant="h3"
-                  component="h1"
-                  gutterBottom
-                  sx={{
-                    fontWeight: "bold", // Emphasize the title
-                    mb: 3, // Add space below the title
+              <div>
+                {/* SVG Section */}
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    transform: "scale(1.5)",
+                    marginLeft: "-80px",
+                    cursor: "pointer",
                   }}
                 >
-                  Welcome to FormIT, Your Custom Software Builder.
-                </Typography>
-              </Fade>
+                  <FormITSvg isAnimated={animateTitle} onClick={handleClick} />
+                  <CircuitAnimation
+                    triggerAnimation={!isVisible}
+                    strokeColor="gold"
+                  />
+                </div>
+
+                {/* Typography - fades in/out on click */}
+                <Fade in={isVisible} timeout={500}>
+                  <Typography
+                    variant="h3"
+                    component="h1"
+                    gutterBottom
+                    sx={{
+                      fontWeight: "bold",
+                      textAlign: "center",
+                      position: "relative",
+                      top: "-150px",
+                      mb: 3,
+                      backgroundColor: theme.windows.primary,
+                      backdropFilter: "blur(10px)",
+                    }}
+                  >
+                    Your Custom Software Builder.
+                  </Typography>
+                </Fade>
+              </div>
 
               {/* Description */}
               <Fade in={animateDescription} timeout={800}>
@@ -137,13 +175,15 @@ function Homepage() {
                   gutterBottom
                   sx={{
                     fontSize: "1.2rem", // Slightly larger text for readability
+                    position: "relative",
+                    top: "-25px",
                     mb: 4, // Add space below the body text
                   }}
                 >
-                  Specialized in building custom applications fast and
-                  inexpensive; tailored to your business needs. Before we begin,
-                  we need to learn more about your requirements to ensure a
-                  successful product.
+                  Specialized in fast and inexpensive software solutions;
+                  tailored to your business needs. Fill out the form specific to
+                  your project and FormIT will respond with a proposal that will
+                  save you time and money.
                 </Typography>
               </Fade>
 
@@ -235,7 +275,7 @@ function Homepage() {
                     value={selectedIndex}
                     onChange={handleTabChange}
                     centered
-                    textColor="theme.palette.primary.main"
+                    textColor="inherit"
                     indicatorColor="none"
                     sx={{
                       "& .MuiTabs-flexContainer": {
