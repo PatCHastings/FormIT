@@ -176,7 +176,7 @@ function Homepage() {
                   sx={{
                     fontSize: "1.2rem", // Slightly larger text for readability
                     position: "relative",
-                    top: "-25px",
+                    top: "-0px",
                     mb: 4, // Add space below the body text
                   }}
                 >
