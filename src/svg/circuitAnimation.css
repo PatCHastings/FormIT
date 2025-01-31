@@ -2,8 +2,6 @@
   opacity: 0;
   visibility: hidden;
   position: absolute;
-
-  z-index: -1;
   transition: opacity 0.3s ease-in-out;
 }
 
@@ -11,8 +9,7 @@
   opacity: 1;
   visibility: visible;
   position: absolute;
-
-  z-index: -1;
+  z-index: 2;
   transition: opacity 0.3s ease-in-out;
 }
 
@@ -50,8 +47,23 @@
 
 .fade-icon path {
   animation-delay: 2s;
+  z-index: 2;
 }
 
 .fade-stroke path {
   transition: stroke 2s ease-in-out;
+}
+
+.circuit-animation {
+  cursor: pointer;
+  filter: drop-shadow(0 0 2px rgba(238, 162, 21, 0.1));
+  transition: filter 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 10;
+
+}
+
+.circuitAnimation-container {
+  pointer-events: auto;
+  position: relative;
+  z-index: 10;
 }

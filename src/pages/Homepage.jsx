@@ -129,6 +129,7 @@ function Homepage() {
             >
               {/* Title */}
               <div>
+                
                 {/* SVG Section */}
                 <div
                   style={{
@@ -190,6 +191,7 @@ function Homepage() {
               {/* Button */}
               <Fade in={animateButton} timeout={800}>
                 <Button
+                type="submit"
                   variant="outlined"
                   size="large"
                   sx={{
