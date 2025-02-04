@@ -1,5 +1,14 @@
 import React from "react";
-import { Box, Typography, Button, Grid } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Button,
+  Grid,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+} from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 
@@ -71,33 +80,115 @@ const ClientDashboard = () => {
   };
 
   return (
-    <Box sx={{ p: 4 }}>
-      <Typography variant="h4">Welcome to Your Dashboard</Typography>
-      <Typography variant="body1" sx={{ mt: 2 }}>
-        Which service do you need help with today?
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        p: 4,
+      }}
+    >
+      <Typography variant="h4" gutterBottom>
+        Welcome to Your Dashboard
       </Typography>
-      <Grid container spacing={2} sx={{ mt: 2 }}>
-        {services.map((service) => (
-          <Grid item xs={12} sm={6} md={4} key={service.key}>
-            <Button
-              variant="outlined"
-              onClick={() => handleSelectService(service.key)}
-              size="large"
-              sx={{
-                color: theme.palette.primary.main,
-                borderColor: theme.palette.primary.main,
-                borderRadius: "50px",
-                "&:hover": {
-                  backgroundColor: theme.palette.primary.main,
-                  color: theme.palette.background.default,
-                },
-              }}
-            >
-              {service.title}
-            </Button>
+
+      {/* Current Projects Section */}
+      <Accordion sx={{ width: "100%", maxWidth: "900px", mb: 4 }}>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="current-projects-content"
+          id="current-projects-header"
+        >
+          <Typography variant="h6">Current Projects</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Grid container spacing={2}>
+            {/* Roadmap Box */}
+            <Grid item xs={12} sm={4}>
+              <Box
+                sx={{
+                  p: 2,
+                  border: `1px solid ${theme.palette.primary.main}`,
+                  borderRadius: 2,
+                  height: "100%",
+                }}
+              >
+                <Typography variant="subtitle1" gutterBottom>
+                  Roadmap
+                </Typography>
+                <Typography variant="body2">
+                  [Roadmap details go here]
+                </Typography>
+              </Box>
+            </Grid>
+            {/* Project Progress Box */}
+            <Grid item xs={12} sm={4}>
+              <Box
+                sx={{
+                  p: 2,
+                  border: `1px solid ${theme.palette.primary.main}`,
+                  borderRadius: 2,
+                  height: "100%",
+                }}
+              >
+                <Typography variant="subtitle1" gutterBottom>
+                  Project Progress
+                </Typography>
+                <Typography variant="body2">
+                  [Progress details go here]
+                </Typography>
+              </Box>
+            </Grid>
+            {/* Project Outline Box */}
+            <Grid item xs={12} sm={4}>
+              <Box
+                sx={{
+                  p: 2,
+                  border: `1px solid ${theme.palette.primary.main}`,
+                  borderRadius: 2,
+                  height: "100%",
+                }}
+              >
+                <Typography variant="subtitle1" gutterBottom>
+                  Project Outline
+                </Typography>
+                <Typography variant="body2">
+                  [Outline details go here]
+                </Typography>
+              </Box>
+            </Grid>
           </Grid>
-        ))}
-      </Grid>
+        </AccordionDetails>
+      </Accordion>
+
+      {/* Service Selection Section */}
+      <Box sx={{ p: 4, width: "100%", maxWidth: "900px" }}>
+        <Typography variant="body1" sx={{ mt: 2 }}>
+          Which service do you need help with today?
+        </Typography>
+        <Grid container spacing={2} sx={{ mt: 2 }}>
+          {services.map((service) => (
+            <Grid item xs={12} sm={6} md={4} key={service.key}>
+              <Button
+                variant="outlined"
+                onClick={() => handleSelectService(service.key)}
+                size="large"
+                sx={{
+                  color: theme.palette.primary.main,
+                  borderColor: theme.palette.primary.main,
+                  borderRadius: "50px",
+                  "&:hover": {
+                    backgroundColor: theme.palette.primary.main,
+                    color: theme.palette.background.default,
+                  },
+                }}
+              >
+                {service.title}
+              </Button>
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
     </Box>
   );
 };
