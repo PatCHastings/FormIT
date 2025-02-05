@@ -7,6 +7,11 @@ import {
   TextField,
   ListItem,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
 } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
@@ -39,7 +44,9 @@ const ClientForm = () => {
     return storedId ? Number(storedId) : null;
   });
 
-  // 1) Fetch the wizard steps for this serviceType
+  // For final "Finish" confirmation dialog
+  const [showFinishModal, setShowFinishModal] = useState(false);
+
   useEffect(() => {
     if (!serviceType) {
       setFetchError("No serviceType specified.");
@@ -63,15 +70,14 @@ const ClientForm = () => {
     fetchSteps();
   }, [serviceType]);
 
-  // 2) If we already have a requestId (meaning we've created or reused a request in the past),
-  //    fetch existing answers so the fields are pre-populated.
+  // If we already have a requestId, fetch existing answers
   useEffect(() => {
     if (!requestId) {
-      console.log("No requestId in localStorage => skip GET /answers");
+      console.log("No requestId => skip GET /answers");
       return;
     }
+    console.log("Fetching answers for requestId:", requestId);
 
-    console.log("Fetching answers for existing requestId:", requestId);
     const fetchAnswers = async () => {
       try {
         const response = await api.get(`/answers?requestId=${requestId}`);
@@ -79,10 +85,9 @@ const ClientForm = () => {
         response.data.completedAnswers.forEach(({ questionId, answerText }) => {
           fetchedAnswers[questionId] = answerText;
         });
-
         setAnswers(fetchedAnswers);
 
-        // Prepopulate completedSteps based on fetched answers
+        // Pre-mark completed steps
         const completed = steps
           .map((step, index) => {
             const allAnswered = step.categories
@@ -101,58 +106,44 @@ const ClientForm = () => {
     fetchAnswers();
   }, [requestId, steps]);
 
-  // 3) Handle Submit
-  //    - Only create a request if there is at least one non-empty answer
-  //    - If requestId is null, the backend will "findOrCreate" a Request.
+  // Submit answers for the current step
   const handleSubmit = async () => {
-    // Grab the current step definition
     const currentStepData = steps[currentStep];
     if (!currentStepData) return;
 
-    // Collect the step's answers
-    const stepAnswers = currentStepData.categories.flatMap((category) =>
-      category.questions.map((q) => ({
+    const stepAnswers = currentStepData.categories.flatMap((cat) =>
+      cat.questions.map((q) => ({
         questionId: q.id,
         answerText: answers[q.id] || "",
       }))
     );
 
-    // Only keep non-empty answers
     const formattedAnswers = {};
     stepAnswers.forEach(({ questionId, answerText }) => {
       if (answerText.trim()) {
         formattedAnswers[questionId] = answerText;
       }
     });
-
-    // Check if there's at least one non-empty answer
     const hasAtLeastOneAnswer = Object.keys(formattedAnswers).length > 0;
     if (!hasAtLeastOneAnswer) {
-      // If user didn't fill out anything, do NOT create a request
-      console.log("No answers provided => not creating request yet.");
+      console.log("No answers => not creating request yet.");
       return;
     }
 
     try {
-      // POST to /answers
-      // If requestId is null, the backend route "finds or creates" a new request record
       const response = await api.post("/answers", {
         requestId,
         answers: formattedAnswers,
         serviceType,
       });
-
-      // The backend always returns the requestId (either reused or newly created)
       const newRequestId = response.data.requestId;
-      console.log("POST /answers => returns requestId:", newRequestId);
 
-      // If we didn't have one before, or if it changed, store in localStorage
       if (!requestId || requestId !== newRequestId) {
         setRequestId(newRequestId);
         localStorage.setItem(localStorageKey, newRequestId);
       }
 
-      // Mark this step as completed if all questions in this step are answered
+      // Mark step as completed if all questions in this step are answered
       const allAnswered = currentStepData.categories
         .flatMap((cat) => cat.questions.map((q) => q.id))
         .every((qid) => answers[qid]?.trim());
@@ -160,14 +151,57 @@ const ClientForm = () => {
         setCompletedSteps((prev) => [...new Set([...prev, currentStep])]);
       }
 
-      // Move to the next step (or finish if last)
       if (currentStep < steps.length - 1) {
         setCurrentStep((prev) => prev + 1);
       } else {
-        console.log("All steps completed!");
+        // We are on the LAST step => check if ALL steps are answered
+        console.log("All steps completed! Checking final conditions...");
+        handleFinishCheck();
       }
     } catch (err) {
       console.error("Error submitting section:", err);
+    }
+  };
+
+  // After finishing the last step, check if ALL questions are answered
+  const handleFinishCheck = () => {
+    const totalQuestions = steps
+      .flatMap((step) => step.categories)
+      .flatMap((cat) => cat.questions).length;
+
+    // Count how many answers we have that are non-empty
+    const submittedAnswersCount = Object.values(answers).filter(
+      (ans) => ans && ans.trim()
+    ).length;
+
+    const allAnswered = submittedAnswersCount === totalQuestions;
+    if (!allAnswered) {
+      alert("You have not answered all required questions yet.");
+      return;
+    }
+    // If all answered, show confirmation dialog
+    setShowFinishModal(true);
+  };
+
+  // User confirms "Finish" => call /proposals/generate
+  const confirmFinish = async () => {
+    setShowFinishModal(false);
+    if (!requestId) {
+      alert("No requestId found, cannot generate proposal.");
+      return;
+    }
+
+    try {
+      const res = await api.post("/generate", { requestId });
+      // If success => user is done
+      alert("Your proposal is being generated! You can now close this page.");
+      console.log("Proposal generate response:", res.data);
+    } catch (err) {
+      if (err.response && err.response.status === 429) {
+        alert(`Rate limit: ${err.response.data.error}`);
+      } else {
+        alert(`Error generating proposal: ${err.message}`);
+      }
     }
   };
 
@@ -197,7 +231,6 @@ const ClientForm = () => {
     ));
   };
 
-  // Current step questions
   const renderCurrentStepContent = () => {
     const stepData = steps[currentStep];
     if (!stepData) {
@@ -263,7 +296,6 @@ const ClientForm = () => {
     );
   }
 
-  // Main render
   return (
     <Box sx={{ display: "flex", flexDirection: "row", height: "100vh" }}>
       {/* Left side: roadmap */}
@@ -295,6 +327,24 @@ const ClientForm = () => {
           </Button>
         </Box>
       </Box>
+
+      {/* Confirmation Dialog for "Finish" */}
+      <Dialog open={showFinishModal} onClose={() => setShowFinishModal(false)}>
+        <DialogTitle>Generate Proposal?</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Clicking "Confirm" will finalize your answers and prompt our AI
+            system to generate your proposal. You can only do this once every X
+            minutes (rate-limited). Are you sure you want to proceed?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setShowFinishModal(false)}>Cancel</Button>
+          <Button onClick={confirmFinish} autoFocus>
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

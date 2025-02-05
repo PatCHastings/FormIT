@@ -1,56 +1,83 @@
+// ProposalEditorAdmin.jsx
 import React, { useState, useEffect } from "react";
 import { Box, Grid, Paper, TextField, Typography, Button } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import api from "../services/api"; // Assume you have an API service for proposals
+import api from "../services/api"; // Your Axios/fetch wrapper
 
-const ProposalEditor = ({ clientId }) => {
+const ProposalEditorAdmin = ({ requestId }) => {
   const theme = useTheme();
 
-  // State for each section of the proposal
+  // State to hold the proposal data
+  // eslint-disable-next-line no-unused-vars
+  const [proposal, setProposal] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  // Separate state for each proposal section
   const [overview, setOverview] = useState("");
   const [scope, setScope] = useState("");
   const [timeline, setTimeline] = useState("");
   const [budget, setBudget] = useState("");
   const [terms, setTerms] = useState("");
   const [nextSteps, setNextSteps] = useState("");
+  const [status, setStatus] = useState("draft"); // workflow: draft, submitted, approved, etc.
+  const [version, setVersion] = useState(1);
 
-  // Optionally, load existing proposal data for the client if available
+  // Load existing proposal data when the component mounts or when requestId changes
   useEffect(() => {
-    const loadProposal = async () => {
+    if (!requestId) return;
+    const fetchProposal = async () => {
+      setLoading(true);
       try {
-        const res = await api.get(`/proposals?clientId=${clientId}`);
-        if (res.data) {
-          setOverview(res.data.overview);
-          setScope(res.data.scope);
-          setTimeline(res.data.timeline);
-          setBudget(res.data.budget);
-          setTerms(res.data.terms);
-          setNextSteps(res.data.nextSteps);
+        // Assume the API returns { proposal: { ... } } or null if not found
+        const res = await api.get(`/proposals?requestId=${requestId}`);
+        if (res.data && res.data.proposal) {
+          const p = res.data.proposal;
+          setProposal(p);
+          setOverview(p.overview || "");
+          setScope(p.scope || "");
+          setTimeline(p.timeline || "");
+          setBudget(p.budget || "");
+          setTerms(p.terms || "");
+          setNextSteps(p.nextSteps || "");
+          setStatus(p.status || "draft");
+          setVersion(p.version || 1);
         }
-      } catch (error) {
-        console.error("Error loading proposal:", error);
+      } catch (err) {
+        console.error("Error loading proposal:", err);
+        setError("Failed to load proposal.");
       }
+      setLoading(false);
     };
-    loadProposal();
-  }, [clientId]);
 
+    fetchProposal();
+  }, [requestId]);
+
+  // Handle Save: This either creates a new proposal or updates an existing one.
   const handleSave = async () => {
     const proposalData = {
-      clientId,
+      requestId,
       overview,
       scope,
       timeline,
       budget,
       terms,
       nextSteps,
+      status,
+      version,
     };
 
     try {
-      // Save as draft; you might want to have a separate endpoint for final proposals.
-      await api.post("/proposals", proposalData);
-      alert("Proposal saved!");
-    } catch (error) {
-      console.error("Error saving proposal:", error);
+      // We assume a POST endpoint that creates or updates the proposal based on requestId.
+      const res = await api.post("/proposals", proposalData);
+      if (res.data && res.data.proposal) {
+        const savedProposal = res.data.proposal;
+        setProposal(savedProposal);
+        setVersion(savedProposal.version);
+        alert("Proposal saved successfully.");
+      }
+    } catch (err) {
+      console.error("Error saving proposal:", err);
       alert("Error saving proposal. Please try again.");
     }
   };
@@ -66,8 +93,12 @@ const ProposalEditor = ({ clientId }) => {
       }}
     >
       <Typography variant="h4" gutterBottom>
-        Project Proposal
+        Proposal Editor
       </Typography>
+
+      {loading && <Typography>Loading proposal...</Typography>}
+      {error && <Typography color="error">{error}</Typography>}
+
       <Grid container spacing={2}>
         {/* Project Overview */}
         <Grid item xs={12}>
@@ -81,6 +112,7 @@ const ProposalEditor = ({ clientId }) => {
             onChange={(e) => setOverview(e.target.value)}
           />
         </Grid>
+
         {/* Project Scope */}
         <Grid item xs={12}>
           <TextField
@@ -93,6 +125,7 @@ const ProposalEditor = ({ clientId }) => {
             onChange={(e) => setScope(e.target.value)}
           />
         </Grid>
+
         {/* Timeline */}
         <Grid item xs={12} sm={6}>
           <TextField
@@ -105,6 +138,7 @@ const ProposalEditor = ({ clientId }) => {
             onChange={(e) => setTimeline(e.target.value)}
           />
         </Grid>
+
         {/* Budget */}
         <Grid item xs={12} sm={6}>
           <TextField
@@ -117,7 +151,8 @@ const ProposalEditor = ({ clientId }) => {
             onChange={(e) => setBudget(e.target.value)}
           />
         </Grid>
-        {/* Terms */}
+
+        {/* Terms & Conditions */}
         <Grid item xs={12}>
           <TextField
             label="Terms & Conditions"
@@ -129,6 +164,7 @@ const ProposalEditor = ({ clientId }) => {
             onChange={(e) => setTerms(e.target.value)}
           />
         </Grid>
+
         {/* Next Steps */}
         <Grid item xs={12}>
           <TextField
@@ -142,6 +178,7 @@ const ProposalEditor = ({ clientId }) => {
           />
         </Grid>
       </Grid>
+
       <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 4 }}>
         <Button variant="contained" color="primary" onClick={handleSave}>
           Save Proposal
@@ -151,4 +188,4 @@ const ProposalEditor = ({ clientId }) => {
   );
 };
 
-export default ProposalEditor;
+export default ProposalEditorAdmin;

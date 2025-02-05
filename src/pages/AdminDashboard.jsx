@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import { Tabs, Tab, Box, Paper } from "@mui/material";
 import Navbar from "../components/Navbar";
 import AdminUserView from "../components/AdminUserView"; // Import your AdminUserView component
-import ProposalEditor from "../components/ProposalEditor";
+import ProposalViewer from "../components/ProposalViewer";
+import ProposalEditorAdmin from "../components/ProposalEditorAdmin";
 
 function AdminDashboard() {
   const [activeTab, setActiveTab] = useState(0);
@@ -31,7 +32,7 @@ function AdminDashboard() {
       {/* Render content based on active tab */}
       <Box sx={{ p: 4 }}>
         {activeTab === 0 && <AdminUserView />} {/* Users tab */}
-        {activeTab === 1 && <ProposalEditor />} {/* Projects tab */}
+        {activeTab === 1 && <ProposalEditorAdmin />} {/* Projects tab */}
         {activeTab === 2 && <div>Settings Section Coming Soon</div>}
       </Box>
     </Box>
