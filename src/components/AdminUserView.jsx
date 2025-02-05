@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import api from "../services/api"; // Replace with your API helper file
 import { useNavigate } from "react-router-dom";
+import ProposalEditorAdmin from "./ProposalEditorAdmin"; // We'll nest this, or navigate to a new route
 
 const AdminUserView = () => {
   const [clients, setClients] = useState([]);
@@ -22,9 +23,14 @@ const AdminUserView = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  // If you want to display ProposalEditorAdmin in-line after selecting a request:
+  const [selectedRequestId, setSelectedRequestId] = useState(null);
+
   useEffect(() => {
     const fetchClients = async () => {
       try {
+        // GET /admin/users-with-answers should include each client, their requests,
+        // and optionally "request.proposal" if you add an "include: [Proposal]" in your backend
         const response = await api.get("/admin/users-with-answers");
         setClients(response.data);
       } catch (err) {
@@ -38,9 +44,15 @@ const AdminUserView = () => {
     fetchClients();
   }, []);
 
+  // Existing function: handle viewing the Q&A form for a particular client
   const handleViewForm = (clientId) => {
     // Navigate to the Q&A details view for the client
     navigate(`/admin/user-form/${clientId}`);
+  };
+
+  const handleOpenProposal = (requestId) => {
+    // Navigate to a new route to view the proposal editor
+    navigate(`/proposals/${requestId}`);
   };
 
   if (loading) {
@@ -89,6 +101,10 @@ const AdminUserView = () => {
               <TableCell>
                 <strong>Questions Submitted</strong>
               </TableCell>
+              {/* New Column: "Proposal" */}
+              <TableCell>
+                <strong>Proposal</strong>
+              </TableCell>
               <TableCell>
                 <strong>Actions</strong>
               </TableCell>
@@ -134,7 +150,6 @@ const AdminUserView = () => {
                         const submittedAnswers = request.answers.filter(
                           (answer) => answer.answer
                         ).length;
-
                         return (
                           <Typography key={request.id}>
                             {submittedAnswers}/{totalQuestions}
@@ -142,6 +157,37 @@ const AdminUserView = () => {
                         );
                       })
                     : "N/A"}
+                </TableCell>
+
+                {/* NEW: Proposal Column */}
+                <TableCell>
+                  {client.requests.length > 0 ? (
+                    client.requests.map((request) => {
+                      // If your backend includes "request.proposal" to indicate if a proposal exists
+                      if (request.proposal) {
+                        return (
+                          <Box key={request.id} sx={{ mb: 1 }}>
+                            <Button
+                              variant="contained"
+                              color="secondary"
+                              onClick={() => handleOpenProposal(request.id)}
+                              // or handleInlineProposal(request.id) if you prefer in-page
+                            >
+                              Open Proposal
+                            </Button>
+                          </Box>
+                        );
+                      } else {
+                        return (
+                          <Typography key={request.id} sx={{ mb: 1 }}>
+                            No Proposal
+                          </Typography>
+                        );
+                      }
+                    })
+                  ) : (
+                    <Typography color="textSecondary">N/A</Typography>
+                  )}
                 </TableCell>
 
                 {/* Actions */}
@@ -161,6 +207,13 @@ const AdminUserView = () => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      {/* If you want to show <ProposalEditorAdmin> in the same page after selecting requestId */}
+      {selectedRequestId && (
+        <Box sx={{ mt: 4 }}>
+          <ProposalEditorAdmin requestId={selectedRequestId} />
+        </Box>
+      )}
     </Container>
   );
 };

@@ -7,10 +7,12 @@ import Login from "./pages/Login";
 import RegisterAccount from "./pages/RegisterAccount";
 import CreatePassword from "./pages/CreatePassword";
 import AdminDashboard from "./pages/AdminDashboard";
-import ClientForm from "./pages/ClientForm";    // Existing questionnaire form
-import ClientDashboard from "./pages/ClientDashboard"; // <-- Import your new dashboard
+import ClientForm from "./pages/ClientForm";    
+import ClientDashboard from "./pages/ClientDashboard"; 
 import Navbar from "./components/Navbar";
 import AdminUserForm from "./pages/AdminUserForm";
+import AdminUserView from "./components/AdminUserView";
+import ProposalEditorAdmin from "./components/ProposalEditorAdmin"; 
 
 function App() {
   return (
@@ -50,6 +52,8 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/admin" element={<AdminUserView />} />
+          <Route path="/proposals/:requestId" element={<ProposalEditorAdmin />} />
 
           {/* Client Dashboard */}
           <Route

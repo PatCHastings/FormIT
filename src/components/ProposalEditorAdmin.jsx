@@ -1,47 +1,50 @@
-// ProposalEditorAdmin.jsx
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom"; // Get requestId from the URL
 import { Box, Grid, Paper, TextField, Typography, Button } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
-import api from "../services/api"; // Your Axios/fetch wrapper
+import api from "../services/api"; // Your Axios wrapper
 
-const ProposalEditorAdmin = ({ requestId }) => {
+const ProposalEditorAdmin = () => {
+  const { requestId } = useParams(); // Extract requestId from the URL
   const theme = useTheme();
-
-  // State to hold the proposal data
-  // eslint-disable-next-line no-unused-vars
-  const [proposal, setProposal] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Separate state for each proposal section
-  const [overview, setOverview] = useState("");
-  const [scope, setScope] = useState("");
+  // Proposal Fields
+  const [proposalContent, setProposalContent] = useState("");
+  const [projectOverview, setProjectOverview] = useState("");
+  const [projectScope, setProjectScope] = useState("");
   const [timeline, setTimeline] = useState("");
   const [budget, setBudget] = useState("");
-  const [terms, setTerms] = useState("");
+  const [termsAndConditions, setTermsAndConditions] = useState("");
   const [nextSteps, setNextSteps] = useState("");
-  const [status, setStatus] = useState("draft"); // workflow: draft, submitted, approved, etc.
+  const [deliverables, setDeliverables] = useState("");
+  const [complianceRequirements, setComplianceRequirements] = useState("");
+  const [adminNotes, setAdminNotes] = useState("");
   const [version, setVersion] = useState(1);
+  const [status, setStatus] = useState("draft");
 
-  // Load existing proposal data when the component mounts or when requestId changes
   useEffect(() => {
     if (!requestId) return;
+
     const fetchProposal = async () => {
       setLoading(true);
       try {
-        // Assume the API returns { proposal: { ... } } or null if not found
-        const res = await api.get(`/proposals?requestId=${requestId}`);
+        const res = await api.get(`/${requestId}`);
         if (res.data && res.data.proposal) {
           const p = res.data.proposal;
-          setProposal(p);
-          setOverview(p.overview || "");
-          setScope(p.scope || "");
+          setProposalContent(p.proposal_content || "");
+          setProjectOverview(p.project_overview || "");
+          setProjectScope(p.project_scope || "");
           setTimeline(p.timeline || "");
           setBudget(p.budget || "");
-          setTerms(p.terms || "");
-          setNextSteps(p.nextSteps || "");
-          setStatus(p.status || "draft");
+          setTermsAndConditions(p.terms_and_conditions || "");
+          setNextSteps(p.next_steps || "");
+          setDeliverables(p.deliverables || "");
+          setComplianceRequirements(p.compliance_requirements || "");
+          setAdminNotes(p.admin_notes || "");
           setVersion(p.version || 1);
+          setStatus(p.status || "draft");
         }
       } catch (err) {
         console.error("Error loading proposal:", err);
@@ -53,29 +56,25 @@ const ProposalEditorAdmin = ({ requestId }) => {
     fetchProposal();
   }, [requestId]);
 
-  // Handle Save: This either creates a new proposal or updates an existing one.
+  // Save the proposal modifications
   const handleSave = async () => {
-    const proposalData = {
-      requestId,
-      overview,
-      scope,
-      timeline,
-      budget,
-      terms,
-      nextSteps,
-      status,
-      version,
-    };
-
     try {
-      // We assume a POST endpoint that creates or updates the proposal based on requestId.
-      const res = await api.post("/proposals", proposalData);
-      if (res.data && res.data.proposal) {
-        const savedProposal = res.data.proposal;
-        setProposal(savedProposal);
-        setVersion(savedProposal.version);
-        alert("Proposal saved successfully.");
-      }
+      await api.post("/proposals", {
+        requestId,
+        proposalContent,
+        projectOverview,
+        projectScope,
+        timeline,
+        budget,
+        termsAndConditions,
+        nextSteps,
+        deliverables,
+        complianceRequirements,
+        adminNotes,
+        version,
+        status,
+      });
+      alert("Proposal saved successfully.");
     } catch (err) {
       console.error("Error saving proposal:", err);
       alert("Error saving proposal. Please try again.");
@@ -99,90 +98,136 @@ const ProposalEditorAdmin = ({ requestId }) => {
       {loading && <Typography>Loading proposal...</Typography>}
       {error && <Typography color="error">{error}</Typography>}
 
-      <Grid container spacing={2}>
-        {/* Project Overview */}
-        <Grid item xs={12}>
-          <TextField
-            label="Project Overview"
-            multiline
-            rows={3}
-            fullWidth
-            variant="outlined"
-            value={overview}
-            onChange={(e) => setOverview(e.target.value)}
-          />
+      {/* Wrap the form fields inside a Box */}
+      <Box component="form" sx={{ mt: 2 }}>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <TextField
+              label="Proposal Content"
+              multiline
+              rows={4}
+              fullWidth
+              variant="outlined"
+              value={proposalContent}
+              onChange={(e) => setProposalContent(e.target.value)}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              label="Project Overview"
+              multiline
+              rows={3}
+              fullWidth
+              variant="outlined"
+              value={projectOverview}
+              onChange={(e) => setProjectOverview(e.target.value)}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              label="Project Scope"
+              multiline
+              rows={4}
+              fullWidth
+              variant="outlined"
+              value={projectScope}
+              onChange={(e) => setProjectScope(e.target.value)}
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Timeline"
+              multiline
+              rows={3}
+              fullWidth
+              variant="outlined"
+              value={timeline}
+              onChange={(e) => setTimeline(e.target.value)}
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6}>
+            <TextField
+              label="Budget"
+              multiline
+              rows={3}
+              fullWidth
+              variant="outlined"
+              value={budget}
+              onChange={(e) => setBudget(e.target.value)}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              label="Terms & Conditions"
+              multiline
+              rows={3}
+              fullWidth
+              variant="outlined"
+              value={termsAndConditions}
+              onChange={(e) => setTermsAndConditions(e.target.value)}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              label="Next Steps"
+              multiline
+              rows={2}
+              fullWidth
+              variant="outlined"
+              value={nextSteps}
+              onChange={(e) => setNextSteps(e.target.value)}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              label="Deliverables"
+              multiline
+              rows={2}
+              fullWidth
+              variant="outlined"
+              value={deliverables}
+              onChange={(e) => setDeliverables(e.target.value)}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              label="Compliance Requirements"
+              multiline
+              rows={2}
+              fullWidth
+              variant="outlined"
+              value={complianceRequirements}
+              onChange={(e) => setComplianceRequirements(e.target.value)}
+            />
+          </Grid>
+
+          <Grid item xs={12}>
+            <TextField
+              label="Admin Notes"
+              multiline
+              rows={2}
+              fullWidth
+              variant="outlined"
+              value={adminNotes}
+              onChange={(e) => setAdminNotes(e.target.value)}
+            />
+          </Grid>
         </Grid>
 
-        {/* Project Scope */}
-        <Grid item xs={12}>
-          <TextField
-            label="Project Scope"
-            multiline
-            rows={4}
-            fullWidth
-            variant="outlined"
-            value={scope}
-            onChange={(e) => setScope(e.target.value)}
-          />
-        </Grid>
-
-        {/* Timeline */}
-        <Grid item xs={12} sm={6}>
-          <TextField
-            label="Timeline"
-            multiline
-            rows={3}
-            fullWidth
-            variant="outlined"
-            value={timeline}
-            onChange={(e) => setTimeline(e.target.value)}
-          />
-        </Grid>
-
-        {/* Budget */}
-        <Grid item xs={12} sm={6}>
-          <TextField
-            label="Budget"
-            multiline
-            rows={3}
-            fullWidth
-            variant="outlined"
-            value={budget}
-            onChange={(e) => setBudget(e.target.value)}
-          />
-        </Grid>
-
-        {/* Terms & Conditions */}
-        <Grid item xs={12}>
-          <TextField
-            label="Terms & Conditions"
-            multiline
-            rows={3}
-            fullWidth
-            variant="outlined"
-            value={terms}
-            onChange={(e) => setTerms(e.target.value)}
-          />
-        </Grid>
-
-        {/* Next Steps */}
-        <Grid item xs={12}>
-          <TextField
-            label="Next Steps"
-            multiline
-            rows={2}
-            fullWidth
-            variant="outlined"
-            value={nextSteps}
-            onChange={(e) => setNextSteps(e.target.value)}
-          />
-        </Grid>
-      </Grid>
-
-      <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 4 }}>
-        <Button variant="contained" color="primary" onClick={handleSave}>
-          Save Proposal
-        </Button>
+        {/* Box for Save Button */}
+        <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 4 }}>
+          <Button variant="contained" color="primary" onClick={handleSave}>
+            Save Proposal
+          </Button>
+        </Box>
       </Box>
     </Paper>
   );
