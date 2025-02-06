@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Box,
   Typography,
@@ -22,6 +22,7 @@ const ClientForm = () => {
   const [steps, setSteps] = useState([]);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState(null);
+  const navigate = useNavigate();
 
   // Tracking step progress
   const [completedSteps, setCompletedSteps] = useState([]);
@@ -186,6 +187,7 @@ const ClientForm = () => {
   // User confirms "Finish" => call /proposals/generate
   const confirmFinish = async () => {
     setShowFinishModal(false);
+
     if (!requestId) {
       alert("No requestId found, cannot generate proposal.");
       return;
@@ -193,9 +195,13 @@ const ClientForm = () => {
 
     try {
       const res = await api.post("/generate", { requestId });
-      // If success => user is done
-      alert("Your proposal is being generated! You can now close this page.");
-      console.log("Proposal generate response:", res.data);
+
+      if (res.data && res.data.proposal) {
+        // Navigate user to ProposalViewer after successful generation
+        navigate(`/proposal/${requestId}`);
+      } else {
+        alert("Proposal generation failed. Please try again.");
+      }
     } catch (err) {
       if (err.response && err.response.status === 429) {
         alert(`Rate limit: ${err.response.data.error}`);

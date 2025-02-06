@@ -13,6 +13,7 @@ import Navbar from "./components/Navbar";
 import AdminUserForm from "./pages/AdminUserForm";
 import AdminUserView from "./components/AdminUserView";
 import ProposalEditorAdmin from "./components/ProposalEditorAdmin"; 
+import ProposalViewer from "./components/ProposalViewer";
 
 function App() {
   return (
@@ -73,6 +74,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/proposal/:requestId" element={<ProposalViewer />} />
         </Routes>
       </div>
     </BrowserRouter>
