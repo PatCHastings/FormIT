@@ -28,7 +28,7 @@ const ProposalViewer = () => {
 
     const fetchProposal = async () => {
       try {
-        const res = await api.get(`/${requestId}`);
+        const res = await api.get(`/client/${requestId}`);
         if (res.data && res.data.proposal) {
           setProposalData(res.data.proposal);
         } else {
@@ -89,11 +89,23 @@ const ProposalViewer = () => {
           {!showComparison && (
             <Box textAlign="center" mt={4}>
               <Button
-                variant="contained"
+                variant="outlined"
                 color="secondary"
+                sx={{
+                  color: theme.palette.primary.main,
+                  borderColor: theme.palette.primary.main,
+                  borderRadius: "50px",
+                  "&:hover": {
+                    backgroundColor: theme.palette.primary.main,
+                    color: theme.palette.background.default,
+                  },
+                  px: 4,
+                  py: 1.5,
+                  fontSize: "1rem",
+                }}
                 onClick={() => setShowComparison(true)}
               >
-                Compare Industry vs FormIT AI
+                Compare Industry vs FormIT
               </Button>
             </Box>
           )}

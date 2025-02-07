@@ -166,6 +166,7 @@ const ClientForm = () => {
 
   // After finishing the last step, check if ALL questions are answered
   const handleFinishCheck = () => {
+    console.log("handleFinishCheck -> checking if all answered...");
     const totalQuestions = steps
       .flatMap((step) => step.categories)
       .flatMap((cat) => cat.questions).length;
@@ -186,6 +187,7 @@ const ClientForm = () => {
 
   // User confirms "Finish" => call /proposals/generate
   const confirmFinish = async () => {
+    console.log("confirmFinish -> About to POST /generate", requestId);
     setShowFinishModal(false);
 
     if (!requestId) {

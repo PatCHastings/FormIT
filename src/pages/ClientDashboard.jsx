@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState, useContext } from "react";
 import {
   Box,
   Typography,
@@ -7,10 +7,14 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  CircularProgress,
+  Paper,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
+import api from "../services/api"; // API service
+import { AuthContext } from "../context/AuthContext";
 
 const services = [
   {
@@ -73,11 +77,45 @@ const services = [
 const ClientDashboard = () => {
   const navigate = useNavigate();
   const theme = useTheme();
+  const { auth } = useContext(AuthContext);
+  const [proposals, setProposals] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const handleSelectService = (serviceType) => {
     // Navigate to the question flow with a query param or route param
     navigate(`/questionnaire?serviceType=${serviceType}`);
   };
+
+  // Fetch completed proposals for the logged-in client
+  useEffect(() => {
+    const fetchProposals = async () => {
+      if (!auth.isAuthenticated || !auth.userId) {
+        console.warn("User is not authenticated or userId is missing.");
+        return;
+      }
+
+      try {
+        console.log("Fetching proposals for userId:", auth.userId);
+        const response = await api.get(`/client/${auth.userId}`);
+        console.log("API Response:", response.data);
+
+        // Handle single proposal response
+        const proposalData = response.data.proposal
+          ? [response.data.proposal] // Wrap in an array
+          : [];
+
+        setProposals(proposalData);
+      } catch (err) {
+        console.error("Failed to fetch proposals:", err);
+        setError("No proposals found.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (auth.userId && auth.userId !== "null") fetchProposals();
+  }, [auth.isAuthenticated, auth.userId]);
 
   return (
     <Box
@@ -96,14 +134,12 @@ const ClientDashboard = () => {
       <Accordion sx={{ width: "100%", maxWidth: "900px", mb: 4 }}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
-          aria-controls="current-projects-content"
           id="current-projects-header"
         >
           <Typography variant="h6">Current Projects</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Grid container spacing={2}>
-            {/* Roadmap Box */}
             <Grid item xs={12} sm={4}>
               <Box
                 sx={{
@@ -121,7 +157,6 @@ const ClientDashboard = () => {
                 </Typography>
               </Box>
             </Grid>
-            {/* Project Progress Box */}
             <Grid item xs={12} sm={4}>
               <Box
                 sx={{
@@ -139,7 +174,6 @@ const ClientDashboard = () => {
                 </Typography>
               </Box>
             </Grid>
-            {/* Project Outline Box */}
             <Grid item xs={12} sm={4}>
               <Box
                 sx={{
@@ -158,6 +192,53 @@ const ClientDashboard = () => {
               </Box>
             </Grid>
           </Grid>
+        </AccordionDetails>
+      </Accordion>
+
+      {/* Completed Proposals Section */}
+      <Accordion sx={{ width: "100%", maxWidth: "900px", mb: 4 }}>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          id="completed-proposals-header"
+        >
+          <Typography variant="h6">Completed Proposals</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          {loading ? (
+            <CircularProgress />
+          ) : error ? (
+            <Typography color="error">{error}</Typography>
+          ) : (
+            <Grid container spacing={2}>
+              {proposals.map((proposal) => (
+                <Grid item xs={12} sm={6} key={proposal.id}>
+                  <Paper sx={{ p: 2, borderRadius: 2 }}>
+                    <Typography variant="subtitle1">
+                      {proposal.request
+                        ? proposal.request.projectName
+                        : "Untitled Project"}
+                    </Typography>
+                    <Typography variant="body2" color="textSecondary">
+                      {proposal.status} | Last Updated:{" "}
+                      {new Date(
+                        proposal.last_generated_at
+                      ).toLocaleDateString()}
+                    </Typography>
+                    <Button
+                      variant="contained"
+                      size="small"
+                      sx={{ mt: 2 }}
+                      onClick={() =>
+                        navigate(`/proposal/${proposal.request_id}`)
+                      }
+                    >
+                      View Proposal
+                    </Button>
+                  </Paper>
+                </Grid>
+              ))}
+            </Grid>
+          )}
         </AccordionDetails>
       </Accordion>
 
