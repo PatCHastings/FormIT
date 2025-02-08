@@ -25,26 +25,31 @@ const ProposalEditorAdmin = () => {
   const [status, setStatus] = useState("draft");
 
   useEffect(() => {
-    if (!requestId) return;
+    if (!requestId) {
+      setError("No requestId provided.");
+      return;
+    }
 
     const fetchProposal = async () => {
       setLoading(true);
       try {
-        const res = await api.get(`/${requestId}`);
+        const res = await api.get(`/proposal/${requestId}`); // Call the updated route
         if (res.data && res.data.proposal) {
           const p = res.data.proposal;
-          setProposalContent(p.proposal_content || "");
-          setProjectOverview(p.project_overview || "");
-          setProjectScope(p.project_scope || "");
+          setProposalContent(p.proposalContent || "");
+          setProjectOverview(p.projectOverview || "");
+          setProjectScope(p.projectScope || "");
           setTimeline(p.timeline || "");
           setBudget(p.budget || "");
-          setTermsAndConditions(p.terms_and_conditions || "");
-          setNextSteps(p.next_steps || "");
+          setTermsAndConditions(p.termsAndConditions || "");
+          setNextSteps(p.nextSteps || "");
           setDeliverables(p.deliverables || "");
-          setComplianceRequirements(p.compliance_requirements || "");
-          setAdminNotes(p.admin_notes || "");
+          setComplianceRequirements(p.complianceRequirements || "");
+          setAdminNotes(p.adminNotes || "");
           setVersion(p.version || 1);
           setStatus(p.status || "draft");
+        } else {
+          setError("Proposal not found.");
         }
       } catch (err) {
         console.error("Error loading proposal:", err);

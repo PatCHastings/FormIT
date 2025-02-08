@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import api from "../services/api"; // API service
 import { AuthContext } from "../context/AuthContext";
+import RequestViewer from "../components/RequestViewer";
 
 const services = [
   {
@@ -169,6 +170,7 @@ const ClientDashboard = () => {
                 <Typography variant="subtitle1" gutterBottom>
                   Project Progress
                 </Typography>
+                <RequestViewer />
                 <Typography variant="body2">
                   [Progress details go here]
                 </Typography>

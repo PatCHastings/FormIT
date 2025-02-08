@@ -20,6 +20,7 @@ const ProposalViewer = () => {
   const theme = useTheme();
 
   useEffect(() => {
+    console.log("Fetched requestId:", requestId); // Debugging
     if (!requestId) {
       setError("No requestId found.");
       setLoading(false);
@@ -28,7 +29,9 @@ const ProposalViewer = () => {
 
     const fetchProposal = async () => {
       try {
-        const res = await api.get(`/client/${requestId}`);
+        const res = await api.get(`/proposals`, {
+          params: { requestId }, // Pass requestId as query parameter
+        });
         if (res.data && res.data.proposal) {
           setProposalData(res.data.proposal);
         } else {
@@ -68,12 +71,12 @@ const ProposalViewer = () => {
       {proposalData && (
         <>
           <Typography variant="h6">Project Overview</Typography>
-          <Typography>{proposalData.project_overview}</Typography>
+          <Typography>{proposalData.projectOverview}</Typography>
 
           <Typography variant="h6" mt={2}>
             Project Scope
           </Typography>
-          <Typography>{proposalData.project_scope}</Typography>
+          <Typography>{proposalData.projectScope}</Typography>
 
           <Typography variant="h6" mt={2}>
             Timeline
