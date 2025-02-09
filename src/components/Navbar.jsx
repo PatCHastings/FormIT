@@ -23,19 +23,25 @@ import {
   List,
   ListItem,
   ListItemIcon,
-  ListItemButton,
   Toolbar,
   Divider,
 } from "@mui/material";
 
 import ChangePassword from "../pages/ChangePassword";
 
-const NAV_ITEMS = [
-  { title: "Dashboard", icon: <DashboardIcon />, path: "/dashboard" },
-  { title: "Orders", icon: <ShoppingCartIcon />, path: "/orders" },
-  { title: "Reports", icon: <BarChartIcon />, path: "/reports" },
-  { title: "Integrations", icon: <LayersIcon />, path: "/integrations" },
-];
+const NAV_ITEMS = {
+  admin: [
+    { title: "Admin Dashboard", icon: <DashboardIcon />, path: "/admin" },
+    { title: "Orders", icon: <ShoppingCartIcon />, path: "/orders" },
+    { title: "Reports", icon: <BarChartIcon />, path: "/reports" },
+    { title: "Integrations", icon: <LayersIcon />, path: "/integrations" },
+  ],
+  client: [
+    { title: "Client Dashboard", icon: <DashboardIcon />, path: "/client" },
+    { title: "My Orders", icon: <ShoppingCartIcon />, path: "/my-orders" },
+    { title: "Analytics", icon: <BarChartIcon />, path: "/analytics" },
+  ],
+};
 
 const Navbar = ({ onLoginToggle }) => {
   const { auth, logout } = useContext(AuthContext);
@@ -83,6 +89,11 @@ const Navbar = ({ onLoginToggle }) => {
 
   const hoverColor = theme.palette.primary.main;
 
+  // Dynamically get NAV_ITEMS based on the user's role
+  const userNavItems = auth.isAuthenticated
+    ? NAV_ITEMS[auth.role] || [] // Default to an empty array if no role matches
+    : [];
+
   return (
     <>
       {/* Wrapper to detect hover over hidden Navbar */}
@@ -103,7 +114,7 @@ const Navbar = ({ onLoginToggle }) => {
         className="navbar"
         style={{
           position: "fixed",
-          top: isHidden && !isHovered ? "-55px" : "0",
+          top: drawerOpen || isHovered || !isHidden ? "0" : "-55px",
           left: 0,
           width: "100%",
           height: "55px",
@@ -114,7 +125,7 @@ const Navbar = ({ onLoginToggle }) => {
           backgroundColor: "rgba(255, 255, 255, 0)",
           backdropFilter: "blur(6px)",
           color: theme.palette.text.primary,
-          borderBottom: isHovered ? `.5px solid` : "none",
+          borderBottom: drawerOpen || isHovered ? `.5px solid` : "none",
           transition: "top 0.3s, background-color 0.3s, border-bottom 0.3s",
         }}
         onMouseEnter={() => setIsHovered(true)}
@@ -126,6 +137,13 @@ const Navbar = ({ onLoginToggle }) => {
           sx={{
             marginLeft: "1rem",
             color: theme.palette.text.primary,
+            border: "1px solid transparent",
+            borderRadius: "50px",
+            "&:hover": {
+              color: hoverColor,
+              backgroundColor: "transparent",
+              border: `1px solid ${hoverColor}`,
+            },
           }}
         >
           <MenuIcon />
@@ -181,7 +199,13 @@ const Navbar = ({ onLoginToggle }) => {
             onClick={handleMenuOpen}
             sx={{
               color: theme.palette.text.primary,
-              "&:hover, &:active": { color: hoverColor },
+              border: "1px solid transparent",
+              borderRadius: "50px",
+              "&:hover": {
+                color: hoverColor,
+                backgroundColor: "transparent",
+                border: `1px solid ${hoverColor}`,
+              },
             }}
           >
             <MenuIcon />
@@ -297,6 +321,7 @@ const Navbar = ({ onLoginToggle }) => {
         anchor="left"
         open={drawerOpen}
         onClose={toggleDrawer}
+        variant="persistent"
         sx={{
           "& .MuiDrawer-paper": {
             width: 240,
@@ -308,13 +333,15 @@ const Navbar = ({ onLoginToggle }) => {
       >
         <Toolbar />
         <List>
-          {NAV_ITEMS.map((item, index) => (
+          {userNavItems.map((item, index) => (
             <ListItem
-              button
               key={index}
               onClick={() => {
                 navigate(item.path);
                 toggleDrawer();
+              }}
+              sx={{
+                cursor: "pointer", // Add this for proper pointer behavior
               }}
             >
               <ListItemIcon>{item.icon}</ListItemIcon>
