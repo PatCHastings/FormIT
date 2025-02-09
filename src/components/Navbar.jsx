@@ -8,27 +8,45 @@ import MenuIcon from "@mui/icons-material/Menu";
 import WbSunnyIcon from "@mui/icons-material/WbSunny";
 import NightlightIcon from "@mui/icons-material/Nightlight";
 import CottageOutlinedIcon from "@mui/icons-material/CottageOutlined";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import BarChartIcon from "@mui/icons-material/BarChart";
+import LayersIcon from "@mui/icons-material/Layers";
+
 import {
   Menu,
   MenuItem,
   IconButton,
   ListItemText,
   Button,
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemButton,
+  Toolbar,
+  Divider,
 } from "@mui/material";
+
 import ChangePassword from "../pages/ChangePassword";
+
+const NAV_ITEMS = [
+  { title: "Dashboard", icon: <DashboardIcon />, path: "/dashboard" },
+  { title: "Orders", icon: <ShoppingCartIcon />, path: "/orders" },
+  { title: "Reports", icon: <BarChartIcon />, path: "/reports" },
+  { title: "Integrations", icon: <LayersIcon />, path: "/integrations" },
+];
 
 const Navbar = ({ onLoginToggle }) => {
   const { auth, logout } = useContext(AuthContext);
   const { mode, toggleTheme } = useContext(ThemeContext);
   const theme = useTheme();
-  const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate();
 
-  // State for hiding Navbar and hover effect
+  const [anchorEl, setAnchorEl] = useState(null);
   const [isHidden, setIsHidden] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-
-  // ADDED: State to control ChangePassword modal visibility
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [openChangePassword, setOpenChangePassword] = useState(false);
 
   useEffect(() => {
@@ -36,7 +54,6 @@ const Navbar = ({ onLoginToggle }) => {
 
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      // Hide Navbar when scrolling down and not hovered
       if (!isHovered) {
         setIsHidden(currentScrollY > lastScrollY && currentScrollY > 50);
       }
@@ -60,6 +77,10 @@ const Navbar = ({ onLoginToggle }) => {
     setAnchorEl(null);
   };
 
+  const toggleDrawer = () => {
+    setDrawerOpen(!drawerOpen);
+  };
+
   const hoverColor = theme.palette.primary.main;
 
   return (
@@ -75,15 +96,14 @@ const Navbar = ({ onLoginToggle }) => {
           zIndex: 999,
           backgroundColor: "transparent",
         }}
-        onMouseEnter={() => setIsHovered(true)} // Show Navbar on hover
-        onMouseLeave={() => setIsHovered(false)} // Reapply hidden logic on leave
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       />
-
       <nav
         className="navbar"
         style={{
           position: "fixed",
-          top: isHidden && !isHovered ? "-55px" : "0", // Hide Navbar when scrolling
+          top: isHidden && !isHovered ? "-55px" : "0",
           left: 0,
           width: "100%",
           height: "55px",
@@ -91,17 +111,25 @@ const Navbar = ({ onLoginToggle }) => {
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
-          backgroundColor: isHovered
-            ? "rgba(255, 255, 255, 0)" // Add blur effect on hover
-            : "rgba(255, 255, 255, 0)", // Semi-transparent when visible
-          backdropFilter: "blur(6px)", // Blur effect
+          backgroundColor: "rgba(255, 255, 255, 0)",
+          backdropFilter: "blur(6px)",
           color: theme.palette.text.primary,
           borderBottom: isHovered ? `.5px solid` : "none",
-          transition: "top 0.3s, background-color 0.3s, border-bottom 0.3s", 
+          transition: "top 0.3s, background-color 0.3s, border-bottom 0.3s",
         }}
-        onMouseEnter={() => setIsHovered(true)} // Prevent hiding when hovering over Navbar
-        onMouseLeave={() => setIsHovered(false)} // Allow hiding when leaving Navbar
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
+        {/* Drawer toggle button */}
+        <IconButton
+          onClick={toggleDrawer}
+          sx={{
+            marginLeft: "1rem",
+            color: theme.palette.text.primary,
+          }}
+        >
+          <MenuIcon />
+        </IconButton>
         <ul className="navbar-links">
           {auth.isAuthenticated && auth.role === "admin" && (
             <li>
@@ -126,17 +154,9 @@ const Navbar = ({ onLoginToggle }) => {
             sx={{
               color: theme.palette.text.primary,
               marginRight: "1rem",
-              border: "1px solid transparent",
-              "&:hover, &:active": {
-                color: hoverColor,
-                backgroundColor: "transparent",
-                border: ` ${hoverColor}`,
-              },
+              "&:hover, &:active": { color: hoverColor },
             }}
-            onClick={() => {
-              if (onLoginToggle) onLoginToggle();
-              navigate("/default");
-            }}
+            onClick={() => navigate("/default")}
           />
           {!auth.isAuthenticated && (
             <Button
@@ -144,19 +164,14 @@ const Navbar = ({ onLoginToggle }) => {
               sx={{
                 color: theme.palette.text.primary,
                 marginRight: "1rem",
-                textTransform: "none",
-                border: "1px solid transparent",
-                borderRadius: "50px",
                 "&:hover": {
                   color: hoverColor,
                   backgroundColor: "transparent",
                   border: `1px solid ${hoverColor}`,
+                  borderRadius: "50px",
                 },
               }}
-              onClick={() => {
-                if (onLoginToggle) onLoginToggle(); // Call onLoginToggle if it's defined
-                navigate("/login"); // Navigate to the login page
-              }}
+              onClick={() => navigate("/login")}
             >
               Login
             </Button>
@@ -166,12 +181,7 @@ const Navbar = ({ onLoginToggle }) => {
             onClick={handleMenuOpen}
             sx={{
               color: theme.palette.text.primary,
-              border: "1px solid transparent",
-              "&:hover, &:active": {
-                color: hoverColor,
-                backgroundColor: "transparent",
-                border: `1px solid ${hoverColor}`,
-              },
+              "&:hover, &:active": { color: hoverColor },
             }}
           >
             <MenuIcon />
@@ -196,9 +206,13 @@ const Navbar = ({ onLoginToggle }) => {
                 position: "fixed",
                 width: "200px",
                 maxWidth: "200px",
-                backgroundColor: "transparent",
+                background: "none",
+                backgroundColor: isHovered
+                  ? "rgba(255, 255, 255, 0)" // Add blur effect on hover
+                  : "rgba(255, 255, 255, 0)", // Semi-transparent when visible
                 backdropFilter: "blur(10px)", // Blur effect
                 color: theme.palette.text.primary,
+
                 mt: 4.8,
               },
             }}
@@ -278,7 +292,40 @@ const Navbar = ({ onLoginToggle }) => {
         </div>
       </nav>
 
-      {/* ADDED: ChangePassword modal using openChangePassword state */}
+      {/* Drawer for side navigation */}
+      <Drawer
+        anchor="left"
+        open={drawerOpen}
+        onClose={toggleDrawer}
+        sx={{
+          "& .MuiDrawer-paper": {
+            width: 240,
+            boxSizing: "border-box",
+            top: "55px", // Start below the Navbar
+            height: "calc(100% - 55px)",
+          },
+        }}
+      >
+        <Toolbar />
+        <List>
+          {NAV_ITEMS.map((item, index) => (
+            <ListItem
+              button
+              key={index}
+              onClick={() => {
+                navigate(item.path);
+                toggleDrawer();
+              }}
+            >
+              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.title} />
+            </ListItem>
+          ))}
+        </List>
+        <Divider />
+      </Drawer>
+
+      {/* Change Password Modal */}
       <ChangePassword
         open={openChangePassword}
         onClose={() => setOpenChangePassword(false)}

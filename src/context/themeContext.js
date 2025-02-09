@@ -25,6 +25,9 @@ const ThemeContextProvider = ({ children }) => {
           secondary: {
             main: mode === "light" ? "#caffe3" : "#242322", // Example secondary color
           },
+          background: {
+            default: mode === "light" ? "#f5f5f5" : "#121212", // Example background color
+          },
         },
         gradients: {
           secondary: mode === "light"

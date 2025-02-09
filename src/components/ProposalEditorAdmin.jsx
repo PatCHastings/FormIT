@@ -88,11 +88,11 @@ const ProposalEditorAdmin = () => {
 
   return (
     <Paper
-      elevation={3}
+      elevation={0}
       sx={{
         p: 4,
         m: 2,
-        backgroundColor: theme.palette.background.paper,
+        backgroundColor: theme.palette.background.default,
         borderRadius: 2,
       }}
     >
