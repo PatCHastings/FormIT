@@ -312,6 +312,33 @@ const Navbar = ({ onLoginToggle }) => {
                 />
               </MenuItem>,
             ]}
+            {/* Forgot Password - Only for unauthenticated users */}
+            {!auth.isAuthenticated && (
+              <MenuItem
+                key="forgotPassword"
+                onClick={() => {
+                  setOpenChangePassword(true);
+                  handleMenuClose();
+                }}
+                sx={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  alignItems: "center",
+                  gap: "8px",
+                  padding: "8px 16px",
+                }}
+              >
+                <ListItemText
+                  primary="Forgot Password?"
+                  sx={{
+                    textAlign: "right",
+                    minWidth: "unset",
+                    flex: "none",
+                    paddingRight: "8px",
+                  }}
+                />
+              </MenuItem>
+            )}
           </Menu>
         </div>
       </nav>

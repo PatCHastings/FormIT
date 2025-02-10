@@ -112,7 +112,7 @@ const ResetPassword = ({ open, onClose }) => {
             </Button>
             <Button
               onClick={() => setIsResetMode(true)}
-              variant="text"
+              variant="outlined"
               color="primary"
               fullWidth
               sx={{ marginTop: "0.5rem" }}
