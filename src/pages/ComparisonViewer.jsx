@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { useTheme } from "@mui/material/styles";
 import {
   Box,
   Button,
@@ -7,7 +8,7 @@ import {
   Typography,
   Paper,
 } from "@mui/material";
-import api from "../services/api"; // Ensure this correctly points to your API wrapper
+import api from "../services/api";
 
 const ComparisonViewer = ({ requestId }) => {
   const { requestId: paramRequestId } = useParams();
@@ -15,36 +16,46 @@ const ComparisonViewer = ({ requestId }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [comparisonData, setComparisonData] = useState(null);
+  const theme = useTheme();
 
   useEffect(() => {
     if (!finalRequestId) {
       setError("No requestId provided.");
-      return;
     }
   }, [finalRequestId]);
 
   // Function to fetch or generate the comparison
   const handleGenerateComparison = async () => {
     if (!finalRequestId) {
+      console.error(
+        "🚨 ERROR: No requestId found, cannot generate comparison."
+      );
       setError("No requestId found, cannot generate comparison.");
       return;
     }
+
+    console.log("📡 Sending POST request to backend...");
+    console.log("📩 Payload:", { requestId: finalRequestId });
 
     setLoading(true);
     setError(null);
 
     try {
-      const response = await api.post("/generate-comparison", {
+      const response = await api.post("/comparison/generate-comparison", {
         requestId: finalRequestId,
       });
 
+      console.log("✅ POST response:", response.data);
+
       if (response.data && response.data.comparison) {
+        console.log("✅ Comparison data received:", response.data.comparison);
         setComparisonData(response.data.comparison);
       } else {
+        console.error("❌ ERROR: No comparison data in response.");
         setError("Comparison data could not be retrieved.");
       }
     } catch (err) {
-      console.error("Error fetching comparison:", err);
+      console.error("❌ ERROR: Failed to generate comparison:", err);
       setError("Failed to generate comparison. Please try again.");
     }
 
@@ -53,8 +64,13 @@ const ComparisonViewer = ({ requestId }) => {
 
   return (
     <Paper
-      elevation={3}
-      sx={{ p: 4, m: 2, backgroundColor: "white", borderRadius: 2 }}
+      elevation={0}
+      sx={{
+        p: 4,
+        m: 2,
+        backgroundColor: theme.palette.background.default,
+        borderRadius: 2,
+      }}
     >
       <Typography variant="h4" gutterBottom>
         Industry vs. FormIT AI Comparison
@@ -64,16 +80,21 @@ const ComparisonViewer = ({ requestId }) => {
       {!comparisonData && !loading && (
         <Box textAlign="center" mt={3}>
           <Button
-            variant="contained"
+            variant="outlined"
             color="primary"
-            onClick={handleGenerateComparison}
+            onClick={() => {
+              console.log(
+                "🖱️ Button clicked! Calling handleGenerateComparison..."
+              );
+              handleGenerateComparison();
+            }}
           >
-            Finish & Generate Comparison
+            Generate Comparison
           </Button>
         </Box>
       )}
 
-      {/* Show loading animation while waiting for OpenAI response */}
+      {/* Show loading animation while waiting for the POST response */}
       {loading && (
         <Box display="flex" justifyContent="center" alignItems="center" mt={4}>
           <CircularProgress />

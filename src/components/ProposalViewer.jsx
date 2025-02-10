@@ -10,6 +10,7 @@ import {
 import api from "../services/api";
 import ComparisonViewer from "../pages/ComparisonViewer";
 import { useTheme } from "@mui/material/styles";
+import FormITSvg from "../svg/formITsvg";
 
 const ProposalViewer = () => {
   const { requestId } = useParams();
@@ -49,16 +50,16 @@ const ProposalViewer = () => {
 
   return (
     <Paper
-      elevation={3}
+      elevation={0}
       sx={{
         p: 4,
         m: 2,
-        backgroundColor: theme.palette.background.paper,
+        backgroundColor: theme.palette.background.default,
         borderRadius: 2,
       }}
     >
       <Typography variant="h4" gutterBottom>
-        AI-Generated Proposal
+        <FormITSvg /> AI Proposal
       </Typography>
 
       {loading && (
@@ -93,10 +94,7 @@ const ProposalViewer = () => {
             <Box textAlign="center" mt={4}>
               <Button
                 variant="outlined"
-                color="secondary"
                 sx={{
-                  color: theme.palette.primary.main,
-                  borderColor: theme.palette.primary.main,
                   borderRadius: "50px",
                   "&:hover": {
                     backgroundColor: theme.palette.primary.main,

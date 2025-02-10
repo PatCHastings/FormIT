@@ -14,6 +14,7 @@ import AdminUserForm from "./pages/AdminUserForm";
 import AdminUserView from "./components/AdminUserView";
 import ProposalEditorAdmin from "./components/ProposalEditorAdmin"; 
 import ProposalViewer from "./components/ProposalViewer";
+import ResetPassword from "./pages/ResetPassword";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<RegisterAccount />} />
           <Route path="/create-password" element={<CreatePassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
 
           {/* Inline component to determine default route based on auth */}
           <Route path="/default" element={<DefaultRedirect />} />
@@ -71,7 +73,7 @@ function App() {
             element={
               <ProtectedRoute requiredRole="client">
                 <ClientForm />
-              </ProtectedRoute>
+              </ProtectedRoute> 
             }
           />
           <Route path="/proposal/:requestId" element={<ProposalViewer />} />

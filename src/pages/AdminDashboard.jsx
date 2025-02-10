@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { Tabs, Tab, Box, Paper } from "@mui/material";
-import Navbar from "../components/Navbar";
 import AdminUserView from "../components/AdminUserView"; // Import your AdminUserView component
-import ProposalViewer from "../components/ProposalViewer";
 import ProposalEditorAdmin from "../components/ProposalEditorAdmin";
 
 function AdminDashboard() {
@@ -17,7 +15,6 @@ function AdminDashboard() {
       component="main"
       sx={{ minHeight: "100vh", backgroundColor: "", py: 4 }}
     >
-      <Navbar />
       <Paper
         elevation={3}
         sx={{ p: 4, mb: 4, textAlign: "center", backgroundColor: "" }}

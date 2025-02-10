@@ -12,6 +12,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import LayersIcon from "@mui/icons-material/Layers";
+import SmallFormIT from "../svg/SmallFormIT";
 
 import {
   Menu,
@@ -103,7 +104,7 @@ const Navbar = ({ onLoginToggle }) => {
           top: 0,
           left: 0,
           width: "100%",
-          height: isHidden ? "55px" : "0",
+          height: isHovered || isHidden ? "55px" : "0",
           zIndex: 999,
           backgroundColor: "transparent",
         }}
@@ -146,7 +147,7 @@ const Navbar = ({ onLoginToggle }) => {
             },
           }}
         >
-          <MenuIcon />
+          <SmallFormIT />
         </IconButton>
         <ul className="navbar-links">
           {auth.isAuthenticated && auth.role === "admin" && (
@@ -353,6 +354,8 @@ const Navbar = ({ onLoginToggle }) => {
           "& .MuiDrawer-paper": {
             width: 240,
             boxSizing: "border-box",
+            backgroundColor: "rgba(255, 255, 255, 0)",
+            backdropFilter: "blur(10px)",
             top: "55px", // Start below the Navbar
             height: "calc(100% - 55px)",
           },
