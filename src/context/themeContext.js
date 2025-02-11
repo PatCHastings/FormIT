@@ -23,15 +23,15 @@ const ThemeContextProvider = ({ children }) => {
             main: mode === "light" ? "#804cc4" : "#34e6dd", // Adjust for light/dark mode
           },
           secondary: {
-            main: mode === "light" ? "#caffe3" : "#242322", // Example secondary color
+            main: mode === "light" ? "#caffe3" : "#242322", 
           },
           background: {
-            default: mode === "light" ? "#f5f5f5" : "#121212", // Example background color
+            default: mode === "light" ? "#f5f5f5" : "#121212", 
           },
         },
         gradients: {
           secondary: mode === "light"
-            ? "linear-gradient(45deg, #3a04fc3b 30%, #00d9ff2c 90%)"
+            ? "linear-gradient(45deg, ##eea215 90%, #34e6dd 90%)"
             : "linear-gradient(-45deg, #242322 30%, #3a3a3a 90%)",
         }, 
         gradient: {

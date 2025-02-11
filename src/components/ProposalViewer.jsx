@@ -10,7 +10,7 @@ import {
 import api from "../services/api";
 import ComparisonViewer from "../pages/ComparisonViewer";
 import { useTheme } from "@mui/material/styles";
-import FormITSvg from "../svg/formITsvg";
+import FormITsmall from "../svg/FormITsmall";
 
 const ProposalViewer = () => {
   const { requestId } = useParams();
@@ -58,8 +58,8 @@ const ProposalViewer = () => {
         borderRadius: 2,
       }}
     >
-      <Typography variant="h4" gutterBottom>
-        <FormITSvg /> AI Proposal
+      <Typography variant="h4" gutterBottom align="center">
+        <FormITsmall /> AI Proposal
       </Typography>
 
       {loading && (
