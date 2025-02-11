@@ -188,24 +188,10 @@ function Homepage() {
               </Fade>
 
               {/* Button */}
-              <Fade in={animateButton} timeout={800}>
+              <Fade in={animateButton} timeout={8000}>
                 <Button
                   type="submit"
-                  variant="outlined"
                   size="large"
-                  color="primary"
-                  sx={{
-                    color: theme.palette.primary.main,
-                    borderColor: theme.palette.primary.main,
-                    borderRadius: "50px",
-                    "&:hover": {
-                      backgroundColor: theme.palette.primary.main,
-                      color: theme.palette.background.default,
-                    },
-                    px: 4,
-                    py: 1.5,
-                    fontSize: "1rem",
-                  }}
                   onClick={() => {
                     navigate("/register");
                   }}

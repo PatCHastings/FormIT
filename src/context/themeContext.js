@@ -41,20 +41,25 @@ const ThemeContextProvider = ({ children }) => {
         },
         windows: {
           primary: mode === "light"
-            ? "#fff" // 50% transparency
-            : "#1212127e", // 50% transparency
+            ? "#ffffff00" // 0% transparency
+            : "#00000000", // 0% transparency
         },
         components: {
           MuiButton: {
             styleOverrides: {
               root: {
-                borderRadius: 8, // Optional: rounded corners for buttons
+
+                borderRadius: "50px", // Optional: rounded corners for buttons
                 textTransform: "none", // Optional: remove uppercase text
                 padding: "8px 16px", // Optional: consistent padding
+                "&:hover": {
+                  backgroundColor: mode === "light" ? "#804cc4" : "#34e6dd",
+                  color: mode === "light" ? "#f5f5f5" : "#121212",
+          },
               },
             },
             defaultProps: {
-              variant: "contained", // Default button variant
+              variant: "outlined", // Default button variant
               color: "primary", // Default button color
             },
           },

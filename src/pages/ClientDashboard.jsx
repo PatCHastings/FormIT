@@ -1,5 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import {
+  Tabs,
+  Tab,
   Box,
   Typography,
   Button,
@@ -9,6 +11,7 @@ import {
   AccordionDetails,
   CircularProgress,
   Paper,
+  useMediaQuery,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useNavigate } from "react-router-dom";
@@ -82,10 +85,16 @@ const ClientDashboard = () => {
   const [proposals, setProposals] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedTab, setSelectedTab] = useState(0);
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleSelectService = (serviceType) => {
     // Navigate to the question flow with a query param or route param
     navigate(`/questionnaire?serviceType=${serviceType}`);
+  };
+
+  const handleTabChange = (event, newValue) => {
+    setSelectedTab(newValue);
   };
 
   // Fetch completed proposals for the logged-in client
@@ -132,7 +141,7 @@ const ClientDashboard = () => {
       </Typography>
 
       {/* Current Projects Section */}
-      <Accordion sx={{ width: "100%", maxWidth: "900px", mb: 4 }}>
+      <Accordion sx={{ width: "100%", maxWidth: "1200px", mb: 4 }}>
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           id="current-projects-header"
@@ -140,60 +149,85 @@ const ClientDashboard = () => {
           <Typography variant="h6">Current Projects</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Grid container spacing={2}>
-            <Grid item xs={12} sm={4}>
-              <Box
-                sx={{
-                  p: 2,
-                  border: `1px solid ${theme.palette.primary.main}`,
-                  borderRadius: 2,
-                  height: "100%",
-                }}
-              >
-                <Typography variant="subtitle1" gutterBottom>
-                  Roadmap
-                </Typography>
-                <Typography variant="body2">
-                  [Roadmap details go here]
-                </Typography>
-              </Box>
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <Box
-                sx={{
-                  p: 2,
-                  border: `1px solid ${theme.palette.primary.main}`,
-                  borderRadius: 2,
-                  height: "100%",
-                }}
-              >
-                <Typography variant="subtitle1" gutterBottom>
-                  Project Progress
-                </Typography>
-                <RequestViewer />
-                <Typography variant="body2">
-                  [Progress details go here]
-                </Typography>
-              </Box>
-            </Grid>
-            <Grid item xs={12} sm={4}>
-              <Box
-                sx={{
-                  p: 2,
-                  border: `1px solid ${theme.palette.primary.main}`,
-                  borderRadius: 2,
-                  height: "100%",
-                }}
-              >
-                <Typography variant="subtitle1" gutterBottom>
-                  Project Outline
-                </Typography>
-                <Typography variant="body2">
-                  [Outline details go here]
-                </Typography>
-              </Box>
-            </Grid>
-          </Grid>
+          <Tabs
+            value={selectedTab}
+            onChange={handleTabChange}
+            centered
+            textColor="inherit"
+            indicatorColor="none"
+            sx={{
+              "& .MuiTabs-flexContainer": { gap: 0.5 },
+              "& .MuiTab-root": {
+                fontSize: "1rem",
+                textTransform: "none",
+                borderRadius: "50px",
+                padding: "8px 16px",
+                transition: "all 0.3s ease",
+                border: `1px solid transparent`,
+                "&:hover": {
+                  border: `1px solid`,
+                  borderColor: theme.palette.primary.main,
+                },
+              },
+              "& .Mui-selected": {
+                backgroundColor: theme.palette.primary.main,
+                color: theme.palette.background.default,
+                border: `1px solid`,
+              },
+            }}
+          >
+            <Tab label="Proposals" />
+            <Tab label="Roadmaps" />
+            <Tab label="Project Outline" />
+          </Tabs>
+
+          {selectedTab === 0 && (
+            <Box
+              sx={{
+                p: 2,
+                border: `1px solid ${theme.palette.primary.main}`,
+                borderRadius: 2,
+                mt: 2,
+              }}
+            >
+              <Typography variant="subtitle1" gutterBottom>
+                Project Progress
+              </Typography>
+              <RequestViewer />
+            </Box>
+          )}
+
+          {selectedTab === 1 && (
+            <Box
+              sx={{
+                p: 2,
+                border: `1px solid ${theme.palette.primary.main}`,
+                borderRadius: 2,
+                mt: 2,
+              }}
+            >
+              <Typography variant="subtitle1" gutterBottom>
+                Roadmap
+              </Typography>
+              <Typography variant="body2">[Roadmap details go here]</Typography>
+            </Box>
+          )}
+
+          {selectedTab === 2 && (
+            <Box
+              sx={{
+                p: 2,
+                border: `1px solid ${theme.palette.primary.main}`,
+                borderRadius: 2,
+                mt: 2,
+              }}
+            >
+              <Typography variant="subtitle1" gutterBottom>
+                Project Outline
+              </Typography>
+              <Typography variant="body2">[Outline details go here]</Typography>
+            </Box>
+          )}
         </AccordionDetails>
       </Accordion>
 
@@ -256,15 +290,6 @@ const ClientDashboard = () => {
                 variant="outlined"
                 onClick={() => handleSelectService(service.key)}
                 size="large"
-                sx={{
-                  color: theme.palette.primary.main,
-                  borderColor: theme.palette.primary.main,
-                  borderRadius: "50px",
-                  "&:hover": {
-                    backgroundColor: theme.palette.primary.main,
-                    color: theme.palette.background.default,
-                  },
-                }}
               >
                 {service.title}
               </Button>

@@ -16,6 +16,7 @@ import {
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
 import api from "../services/api";
+import { useTheme } from "@mui/material/styles";
 
 const ClientForm = () => {
   // Wizard steps, loading, error
@@ -23,6 +24,7 @@ const ClientForm = () => {
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState(null);
   const navigate = useNavigate();
+  const theme = useTheme();
 
   // Tracking step progress
   const [completedSteps, setCompletedSteps] = useState([]);
@@ -314,14 +316,12 @@ const ClientForm = () => {
         {renderCurrentStepContent()}
         <Box sx={{ display: "flex", justifyContent: "space-between", mt: 2 }}>
           <Button
-            variant="outlined"
             onClick={() => setCurrentStep((prev) => Math.max(prev - 1, 0))}
             disabled={currentStep === 0}
           >
             Previous
           </Button>
           <Button
-            variant="contained"
             onClick={handleSubmit}
             disabled={
               !steps[currentStep]?.categories
@@ -337,13 +337,29 @@ const ClientForm = () => {
       </Box>
 
       {/* Confirmation Dialog for "Finish" */}
-      <Dialog open={showFinishModal} onClose={() => setShowFinishModal(false)}>
+      <Dialog
+        open={showFinishModal}
+        onClose={() => setShowFinishModal(false)}
+        variant="persistent"
+        sx={{
+          "& .MuiDialog-paper": {
+            padding: "24px",
+            borderRadius: "12px",
+            backgroundColor: theme.windows.primary,
+            backdropFilter: "blur(10px)",
+            border: "1px solid", // Optional border
+            borderColor: theme.palette.primary.main,
+            boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
+          },
+        }}
+      >
         <DialogTitle>Generate Proposal?</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Clicking "Confirm" will finalize your answers and prompt our AI
-            system to generate your proposal. You can only do this once every X
-            minutes (rate-limited). Are you sure you want to proceed?
+            Clicking "Confirm" will submit your answers to our AI and generate a
+            preliminary proposal for your review. This is rate-limited to once
+            every 15 minutes, so review your answers to ensure they accurately
+            describe your project goals. Are you sure you want to proceed?
           </DialogContentText>
         </DialogContent>
         <DialogActions>

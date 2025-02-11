@@ -12,16 +12,22 @@ import {
   Button,
   CircularProgress,
   Paper,
+  Collapse,
 } from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import api from "../services/api"; // Replace with your API helper file
 import { useNavigate } from "react-router-dom";
 import ProposalEditorAdmin from "./ProposalEditorAdmin"; // We'll nest this, or navigate to a new route
+import { useTheme } from "@mui/material/styles";
 
 const AdminUserView = () => {
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [expandedClientId, setExpandedClientId] = useState(null);
   const navigate = useNavigate();
+  const theme = useTheme();
 
   // If you want to display ProposalEditorAdmin in-line after selecting a request:
   const [selectedRequestId, setSelectedRequestId] = useState(null);
@@ -53,6 +59,10 @@ const AdminUserView = () => {
   const handleOpenProposal = (requestId) => {
     // Navigate to a new route to view the proposal editor
     navigate(`/proposals/${requestId}`);
+  };
+
+  const toggleExpand = (clientId) => {
+    setExpandedClientId((prev) => (prev === clientId ? null : clientId));
   };
 
   if (loading) {
@@ -95,114 +105,111 @@ const AdminUserView = () => {
               <TableCell>
                 <strong>Email</strong>
               </TableCell>
-              <TableCell>
-                <strong>Project Name</strong>
-              </TableCell>
-              <TableCell>
-                <strong>Questions Submitted</strong>
-              </TableCell>
-              {/* New Column: "Proposal" */}
-              <TableCell>
-                <strong>Proposal</strong>
-              </TableCell>
-              <TableCell>
+              <TableCell align="center">
                 <strong>Actions</strong>
               </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {clients.map((client) => (
-              <TableRow
-                key={client.id}
-                sx={{
-                  backgroundColor: client.requests.length
-                    ? "inherit"
-                    : "#f0f0f0",
-                  color: client.requests.length ? "inherit" : "#888",
-                }}
-              >
-                {/* Full Name */}
-                <TableCell>{client.full_name}</TableCell>
-
-                {/* Email */}
-                <TableCell>{client.email}</TableCell>
-
-                {/* Service Type (Project Name) */}
-                <TableCell>
-                  {client.requests.length > 0 ? (
-                    client.requests.map((request) => (
-                      <Typography key={request.id}>
-                        {request.project_name}
-                      </Typography>
-                    ))
-                  ) : (
-                    <Typography color="textSecondary">
-                      No submissions
-                    </Typography>
-                  )}
-                </TableCell>
-
-                {/* Questions Submitted */}
-                <TableCell>
-                  {client.requests.length > 0
-                    ? client.requests.map((request) => {
-                        const totalQuestions = request.answers.length;
-                        const submittedAnswers = request.answers.filter(
-                          (answer) => answer.answer
-                        ).length;
-                        return (
-                          <Typography key={request.id}>
-                            {submittedAnswers}/{totalQuestions}
-                          </Typography>
-                        );
-                      })
-                    : "N/A"}
-                </TableCell>
-
-                {/* NEW: Proposal Column */}
-                <TableCell>
-                  {client.requests.length > 0 ? (
-                    client.requests.map((request) => {
-                      // If your backend includes "request.proposal" to indicate if a proposal exists
-                      if (request.proposal) {
-                        return (
-                          <Box key={request.id} sx={{ mb: 1 }}>
-                            <Button
-                              variant="contained"
-                              color="secondary"
-                              onClick={() => handleOpenProposal(request.id)}
-                              // or handleInlineProposal(request.id) if you prefer in-page
-                            >
-                              Open Proposal
-                            </Button>
-                          </Box>
-                        );
-                      } else {
-                        return (
-                          <Typography key={request.id} sx={{ mb: 1 }}>
-                            No Proposal
-                          </Typography>
-                        );
-                      }
-                    })
-                  ) : (
-                    <Typography color="textSecondary">N/A</Typography>
-                  )}
-                </TableCell>
-
-                {/* Actions */}
-                <TableCell>
-                  {client.requests.length > 0 && (
+              <React.Fragment key={client.id}>
+                {/* Main Row */}
+                <TableRow>
+                  <TableCell>{client.full_name}</TableCell>
+                  <TableCell>{client.email}</TableCell>
+                  <TableCell align="center">
                     <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => handleViewForm(client.id)}
+                      onClick={() => toggleExpand(client.id)}
+                      startIcon={
+                        expandedClientId === client.id ? (
+                          <ExpandLessIcon />
+                        ) : (
+                          <ExpandMoreIcon />
+                        )
+                      }
                     >
-                      View Form
+                      {expandedClientId === client.id
+                        ? "Hide Details"
+                        : "View Details"}
                     </Button>
-                  )}
-                </TableCell>
-              </TableRow>
+                  </TableCell>
+                </TableRow>
+
+                {/* Expanded Row */}
+                <TableRow>
+                  <TableCell colSpan={3} sx={{ p: 0 }}>
+                    <Collapse
+                      in={expandedClientId === client.id}
+                      timeout="auto"
+                      unmountOnExit
+                    >
+                      <Box
+                        sx={{ p: 2, backgroundColor: theme.palette.background }}
+                      >
+                        {client.requests.length > 0 ? (
+                          <Table size="small">
+                            <TableHead>
+                              <TableRow>
+                                <TableCell>
+                                  <strong>Project Name</strong>
+                                </TableCell>
+                                <TableCell>
+                                  <strong>Questions Submitted</strong>
+                                </TableCell>
+                                <TableCell>
+                                  <strong>Proposal</strong>
+                                </TableCell>
+                                <TableCell>
+                                  <strong>Actions</strong>
+                                </TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              {client.requests.map((request) => (
+                                <TableRow key={request.id}>
+                                  <TableCell>{request.project_name}</TableCell>
+                                  <TableCell>
+                                    {`${
+                                      request.answers.filter((a) => a.answer)
+                                        .length
+                                    } / ${request.answers.length}`}
+                                  </TableCell>
+                                  <TableCell>
+                                    {request.proposal ? (
+                                      <Button
+                                        onClick={() =>
+                                          handleOpenProposal(request.id)
+                                        }
+                                      >
+                                        View Proposal
+                                      </Button>
+                                    ) : (
+                                      "No Proposal"
+                                    )}
+                                  </TableCell>
+                                  <TableCell>
+                                    <Button
+                                      variant="contained"
+                                      color="primary"
+                                      onClick={() => handleViewForm(client.id)}
+                                    >
+                                      View Form
+                                    </Button>
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        ) : (
+                          <Typography color="textSecondary">
+                            No submissions available
+                          </Typography>
+                        )}
+                      </Box>
+                    </Collapse>
+                  </TableCell>
+                </TableRow>
+              </React.Fragment>
             ))}
           </TableBody>
         </Table>

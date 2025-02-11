@@ -78,22 +78,7 @@ function Login() {
             {error}
           </Typography>
         )}
-        <Button
-          type="submit"
-          fullWidth
-          variant="outlined"
-          color="primary"
-          sx={{
-            mt: 3,
-            mb: 2,
-            color: theme.palette.primary.main, // Use primary color
-            borderColor: theme.palette.primary.main,
-            "&:hover": {
-              backgroundColor: theme.palette.primary.main,
-              color: theme.palette.background.default,
-            },
-          }}
-        >
+        <Button type="submit" fullWidth>
           Login
         </Button>
       </Box>

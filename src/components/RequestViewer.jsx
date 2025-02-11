@@ -6,9 +6,11 @@ import {
   Typography,
   Paper,
   Button,
+  useMediaQuery,
 } from "@mui/material";
 import api from "../services/api";
 import { AuthContext } from "../context/AuthContext";
+import { useTheme } from "@mui/material/styles";
 
 const RequestsList = () => {
   const { auth } = useContext(AuthContext);
@@ -16,6 +18,8 @@ const RequestsList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   useEffect(() => {
     const fetchRequests = async () => {
@@ -46,18 +50,45 @@ const RequestsList = () => {
       {!loading && !error && (
         <Box>
           {requests.map((request) => (
-            <Paper key={request.id} sx={{ p: 2, mb: 2 }}>
-              <Typography variant="h6">{request.projectName}</Typography>
-              <Typography>Status: {request.status}</Typography>
+            <Paper
+              key={request.id}
+              sx={{
+                p: 2,
+                mb: 2,
+                display: "flex",
+                flexDirection: isMobile ? "column" : "row", // Responsive layout
+                alignItems: isMobile ? "flex-start" : "center",
+                gap: 2,
+              }}
+            >
+              <Typography variant="h6" sx={{ flex: isMobile ? "none" : 1 }}>
+                {request.projectName}
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{
+                  color: theme.palette.text.secondary,
+                  flex: isMobile ? "none" : 1,
+                }}
+              >
+                Status: {request.status}
+              </Typography>
               {request.proposal ? (
                 <Button
-                  variant="contained"
+                  variant="outlined"
                   onClick={() => navigate(`/proposal/${request.proposal.id}`)}
                 >
                   View Proposal
                 </Button>
               ) : (
-                <Typography>No proposal available</Typography>
+                <Typography
+                  sx={{
+                    color: theme.palette.error.main,
+                    flex: isMobile ? "none" : 1,
+                  }}
+                >
+                  Proposal not yet generated.
+                </Typography>
               )}
             </Paper>
           ))}

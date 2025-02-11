@@ -94,16 +94,6 @@ const ProposalViewer = () => {
             <Box textAlign="center" mt={4}>
               <Button
                 variant="outlined"
-                sx={{
-                  borderRadius: "50px",
-                  "&:hover": {
-                    backgroundColor: theme.palette.primary.main,
-                    color: theme.palette.background.default,
-                  },
-                  px: 4,
-                  py: 1.5,
-                  fontSize: "1rem",
-                }}
                 onClick={() => setShowComparison(true)}
               >
                 Compare Industry vs FormIT

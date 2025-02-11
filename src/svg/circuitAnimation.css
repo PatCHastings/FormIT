@@ -46,6 +46,7 @@
 
 .fade-icon path {
   animation-delay: 2s;
+  z-index: 10000;
 }
 
 .fade-stroke path {
