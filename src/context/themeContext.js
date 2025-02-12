@@ -20,13 +20,19 @@ const ThemeContextProvider = ({ children }) => {
         palette: {
           mode: mode,
           primary: {
-            main: mode === "light" ? "#804cc4" : "#34e6dd", // Adjust for light/dark mode
+            main: mode === "light" ? "#804cc4" : "#34e6dd", 
           },
           secondary: {
             main: mode === "light" ? "#caffe3" : "#242322", 
           },
           background: {
             default: mode === "light" ? "#f5f5f5" : "#121212", 
+          },
+          chart: {
+            default: mode === "light" ? "#aa63fa" : "#1ba386", 
+          },
+          chartLesser: {
+            default: mode === "light" ? "#79618d" : "#5f9175", 
           },
         },
         gradients: {

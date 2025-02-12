@@ -7,6 +7,12 @@ import {
   CircularProgress,
   Typography,
   Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
 } from "@mui/material";
 import api from "../services/api";
 
@@ -24,18 +30,11 @@ const ComparisonViewer = ({ requestId }) => {
     }
   }, [finalRequestId]);
 
-  // Function to fetch or generate the comparison
   const handleGenerateComparison = async () => {
     if (!finalRequestId) {
-      console.error(
-        "🚨 ERROR: No requestId found, cannot generate comparison."
-      );
       setError("No requestId found, cannot generate comparison.");
       return;
     }
-
-    console.log("📡 Sending POST request to backend...");
-    console.log("📩 Payload:", { requestId: finalRequestId });
 
     setLoading(true);
     setError(null);
@@ -45,17 +44,12 @@ const ComparisonViewer = ({ requestId }) => {
         requestId: finalRequestId,
       });
 
-      console.log("✅ POST response:", response.data);
-
       if (response.data && response.data.comparison) {
-        console.log("✅ Comparison data received:", response.data.comparison);
         setComparisonData(response.data.comparison);
       } else {
-        console.error("❌ ERROR: No comparison data in response.");
         setError("Comparison data could not be retrieved.");
       }
     } catch (err) {
-      console.error("❌ ERROR: Failed to generate comparison:", err);
       setError("Failed to generate comparison. Please try again.");
     }
 
@@ -66,35 +60,33 @@ const ComparisonViewer = ({ requestId }) => {
     <Paper
       elevation={0}
       sx={{
-        p: 4,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        pt: 6,
         m: 2,
         backgroundColor: theme.palette.background.default,
         borderRadius: 2,
       }}
     >
       <Typography variant="h4" gutterBottom>
-        Industry vs. FormIT AI Comparison
+        Industry average vs. FormIT comparison
       </Typography>
 
       {/* Show button if comparison hasn't been generated */}
       {!comparisonData && !loading && (
         <Box textAlign="center" mt={3}>
           <Button
-            variant="outlined"
+            variant="contained"
             color="primary"
-            onClick={() => {
-              console.log(
-                "🖱️ Button clicked! Calling handleGenerateComparison..."
-              );
-              handleGenerateComparison();
-            }}
+            onClick={handleGenerateComparison}
           >
             Generate Comparison
           </Button>
         </Box>
       )}
 
-      {/* Show loading animation while waiting for the POST response */}
+      {/* Show loading animation */}
       {loading && (
         <Box display="flex" justifyContent="center" alignItems="center" mt={4}>
           <CircularProgress />
@@ -111,31 +103,77 @@ const ComparisonViewer = ({ requestId }) => {
         </Typography>
       )}
 
-      {/* Render Comparison Data */}
+      {/* Render Comparison Table with Styled Columns */}
       {comparisonData && (
-        <Box mt={4}>
-          <Typography variant="h5">📊 Timeline Estimates</Typography>
-          <Typography>
-            <strong>Industry Standard:</strong>{" "}
-            {comparisonData.timelineIndustryTime}
-          </Typography>
-          <Typography>
-            <strong>FormIT AI-Powered:</strong>{" "}
-            {comparisonData.timelineFormitTime}
-          </Typography>
-
-          <Typography variant="h5" mt={3}>
-            💰 Budget Estimates
-          </Typography>
-          <Typography>
-            <strong>Industry Standard:</strong>{" "}
-            {comparisonData.budgetIndustryCost}
-          </Typography>
-          <Typography>
-            <strong>FormIT AI-Powered:</strong>{" "}
-            {comparisonData.budgetFormitCost}
-          </Typography>
-        </Box>
+        <TableContainer component={Box} sx={{ mt: 4, maxWidth: 600 }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell
+                  sx={{
+                    backgroundColor: theme.palette.background.default,
+                    fontWeight: "bold",
+                    fontSize: "1rem",
+                  }}
+                ></TableCell>
+                <TableCell
+                  align="center"
+                  sx={{
+                    backgroundColor: theme.palette.chartLesser.default,
+                    color: theme.palette.primary.contrastText,
+                    fontWeight: "bold",
+                    fontSize: "1rem",
+                  }}
+                >
+                  Industry Standard
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{
+                    backgroundColor: theme.palette.chart.default,
+                    color: theme.palette.secondary.contrastText,
+                    fontWeight: "bold",
+                    fontSize: "1rem",
+                  }}
+                >
+                  FormIT AI-Powered
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <TableRow>
+                <TableCell>Timeline (weeks)</TableCell>
+                <TableCell
+                  align="center"
+                  sx={{ backgroundColor: theme.palette.chartLesser.default }}
+                >
+                  {comparisonData.timelineIndustryTime}
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{ backgroundColor: theme.palette.chart.default }}
+                >
+                  {comparisonData.timelineFormitTime}
+                </TableCell>
+              </TableRow>
+              <TableRow>
+                <TableCell>Budget (cost in $)</TableCell>
+                <TableCell
+                  align="center"
+                  sx={{ backgroundColor: theme.palette.chartLesser.default }}
+                >
+                  {comparisonData.budgetIndustryCost}
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{ backgroundColor: theme.palette.chart.default }}
+                >
+                  {comparisonData.budgetFormitCost}
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          </Table>
+        </TableContainer>
       )}
     </Paper>
   );
