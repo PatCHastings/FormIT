@@ -1,5 +1,4 @@
 import React, { useState, useContext } from "react";
-import { useTheme } from "@mui/material/styles";
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -11,7 +10,6 @@ function Login() {
   const [error, setError] = useState("");
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
-  const theme = useTheme();
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -43,7 +41,7 @@ function Login() {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        paddingTop: "2rem",
+        paddingTop: "4rem",
       }}
     >
       <Typography component="h1" variant="h5" sx={{ mb: 2 }}>
@@ -78,7 +76,7 @@ function Login() {
             {error}
           </Typography>
         )}
-        <Button type="submit" fullWidth>
+        <Button type="submit" fullWidth sx={{ mt: 3, borderRadius: 3 }}>
           Login
         </Button>
       </Box>

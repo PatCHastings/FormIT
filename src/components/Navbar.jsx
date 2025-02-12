@@ -182,6 +182,7 @@ const Navbar = ({ onLoginToggle }) => {
               variant="text"
               sx={{
                 color: theme.palette.text.primary,
+                border: "1px solid transparent",
                 marginRight: "1rem",
                 "&:hover": {
                   color: hoverColor,

@@ -229,9 +229,7 @@ const ProposalEditorAdmin = () => {
 
         {/* Box for Save Button */}
         <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 4 }}>
-          <Button variant="contained" color="primary" onClick={handleSave}>
-            Save Proposal
-          </Button>
+          <Button onClick={handleSave}>Save Proposal</Button>
         </Box>
       </Box>
     </Paper>
