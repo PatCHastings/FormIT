@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useTheme } from "@mui/material/styles";
 import { Container, Typography, Box, TextField, Button } from "@mui/material";
 import api from "../services/api";
 
@@ -10,7 +9,6 @@ const RegisterAccount = () => {
   });
   const [message, setMessage] = useState(""); // For success or error messages
   const [loading, setLoading] = useState(false); // Loading state for button
-  const theme = useTheme();
 
   // Handle input changes
   const handleChange = (e) => {
