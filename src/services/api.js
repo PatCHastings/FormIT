@@ -1,6 +1,9 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:5000";
+const API_BASE_URL =
+  process.env.NODE_ENV === 'production'
+    ? `${process.env.REACT_APP_API_BASE_URL}/api` || 'https://api.formit-software.com/api'
+    : 'http://localhost:5000/api';
 
 console.log(`Using API Base URL: ${API_BASE_URL}`);
 
