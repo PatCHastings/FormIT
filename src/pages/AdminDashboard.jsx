@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Tabs, Tab, Box, Paper } from "@mui/material";
-import AdminUserView from "../components/AdminUserView"; // Import your AdminUserView component
+import AdminUserView from "../components/AdminUserView";
 import ProposalEditorAdmin from "../components/ProposalEditorAdmin";
 
 function AdminDashboard() {

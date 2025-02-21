@@ -27,7 +27,7 @@ const ResetPassword = ({ open, onClose }) => {
       setMessage(
         response.data.message || "Password reset email sent successfully!"
       );
-      setEmail(""); // Clear email input
+      setEmail("");
     } catch (error) {
       setMessage(
         error.response?.data?.error || "Failed to send password reset email."

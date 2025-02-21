@@ -11,6 +11,7 @@ import {
   Tabs,
   Tab,
   Grid,
+  useMediaQuery,
 } from "@mui/material";
 import { useInView } from "react-intersection-observer";
 import FormITSvg from "../svg/formITsvg";
@@ -33,6 +34,9 @@ function Homepage() {
   const { ref: problemRef, inView: problemInView } = useInView({
     threshold: 0.8,
   });
+
+  // Responsive breakpoints
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const painPoints = [
     {
@@ -115,14 +119,16 @@ function Homepage() {
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            py: 4,
+            py: isMobile ? 2 : 4, // Tighter padding on mobile
+            transform: isMobile ? "scale(0.8)" : "scale(1)", // Reduce scale for mobile
           }}
         >
           <Container maxWidth="md">
             <Paper
               elevation={0}
               sx={{
-                p: 6,
+                p: isMobile ? 2 : 6, // Less padding on mobile
+
                 textAlign: "center",
                 backgroundColor: "transparent",
               }}
@@ -135,8 +141,8 @@ function Homepage() {
                     display: "flex",
                     justifyContent: "center",
                     alignItems: "center",
-                    transform: "scale(1.5)",
-                    marginLeft: "-80px",
+                    transform: isMobile ? "scale(1)" : "scale(1.5)", // Shrink SVG on mobile
+                    marginLeft: "-80px", // Adjust positioning
                     cursor: "pointer",
                   }}
                 >
@@ -150,14 +156,14 @@ function Homepage() {
                 {/* Typography - fades in/out on click */}
                 <Fade in={isVisible} timeout={500}>
                   <Typography
-                    variant="h3"
+                    variant={isMobile ? "h4" : "h3"} // Smaller heading on mobile
                     component="h1"
                     gutterBottom
                     sx={{
                       fontWeight: "bold",
                       textAlign: "center",
                       position: "relative",
-                      top: "-150px",
+                      top: isMobile ? "-150px" : "-150px", // Adjust positioning dynamically
                       mb: 3,
                       backgroundColor: theme.windows.primary,
                       backdropFilter: "blur(10px)",
@@ -174,10 +180,10 @@ function Homepage() {
                   variant="body1"
                   gutterBottom
                   sx={{
-                    fontSize: "1.2rem", // Slightly larger text for readability
+                    fontSize: isMobile ? "1rem" : "1.2rem", // Reduce font size on mobile
                     position: "relative",
-                    top: "-0px",
-                    mb: 4, // Add space below the body text
+                    top: isMobile ? "-150px" : "0px",
+                    mb: isMobile ? 2 : 4, // Reduce bottom spacing on mobile
                   }}
                 >
                   Specialized in fast and inexpensive software solutions;
@@ -190,11 +196,13 @@ function Homepage() {
               {/* Button */}
               <Fade in={animateButton} timeout={8000}>
                 <Button
-                  type="submit"
-                  size="large"
-                  onClick={() => {
-                    navigate("/register");
+                  sx={{
+                    borderRadius: "50px",
+                    top: isMobile ? "-100px" : "0px",
                   }}
+                  type="submit"
+                  size={isMobile ? "medium" : "large"} // Smaller button on mobile
+                  onClick={() => navigate("/register")}
                 >
                   Get Started
                 </Button>
