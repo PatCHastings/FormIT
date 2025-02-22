@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import {
@@ -31,12 +31,15 @@ function Homepage() {
   const { ref: heroRef, inView: heroInView } = useInView({
     threshold: 0.5,
   });
-  const { ref: problemRef, inView: problemInView } = useInView({
-    threshold: 0.8,
-  });
 
   // Responsive breakpoints
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
+  const thresholdValue = useMemo(() => (isMobile ? 0.5 : 0.8), [isMobile]);
+
+  const { ref: problemRef, inView: problemInView } = useInView({
+    threshold: thresholdValue, // Dynamically set based on screen width
+  });
 
   const painPoints = [
     {
@@ -194,7 +197,7 @@ function Homepage() {
               </Fade>
 
               {/* Button */}
-              <Fade in={animateButton} timeout={8000}>
+              <Fade in={animateButton} timeout={2000}>
                 <Button
                   sx={{
                     borderRadius: "50px",
@@ -243,7 +246,7 @@ function Homepage() {
               sx={{
                 width: "100%",
                 maxWidth: "900px",
-                p: 4,
+                p: 1,
                 textAlign: "center",
                 borderRadius: 4, // Optional: Add rounded corners
                 backgroundColor: "transparent", // Make background transparent
@@ -275,7 +278,7 @@ function Homepage() {
                     indicatorColor="none"
                     sx={{
                       "& .MuiTabs-flexContainer": {
-                        gap: 0.5,
+                        gap: 1,
                       },
                       "& .MuiTab-root": {
                         fontSize: "1rem",
