@@ -9,7 +9,7 @@ import WbSunnyIcon from "@mui/icons-material/WbSunny";
 import NightlightIcon from "@mui/icons-material/Nightlight";
 import CottageOutlinedIcon from "@mui/icons-material/CottageOutlined";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import DescriptionIcon from "@mui/icons-material/Description";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import LayersIcon from "@mui/icons-material/Layers";
 import SmallFormIT from "../svg/SmallFormIT";
@@ -33,13 +33,13 @@ import ChangePassword from "../pages/ChangePassword";
 const NAV_ITEMS = {
   admin: [
     { title: "Admin Dashboard", icon: <DashboardIcon />, path: "/admin" },
-    { title: "Orders", icon: <ShoppingCartIcon />, path: "/orders" },
+    { title: "Orders", icon: <DescriptionIcon />, path: "/orders" },
     { title: "Reports", icon: <BarChartIcon />, path: "/reports" },
     { title: "Integrations", icon: <LayersIcon />, path: "/integrations" },
   ],
   client: [
     { title: "Client Dashboard", icon: <DashboardIcon />, path: "/client" },
-    { title: "My Orders", icon: <ShoppingCartIcon />, path: "/my-orders" },
+    { title: "My Project", icon: <DescriptionIcon />, path: "/my-orders" },
     { title: "Analytics", icon: <BarChartIcon />, path: "/analytics" },
   ],
 };
@@ -143,7 +143,6 @@ const Navbar = ({ onLoginToggle }) => {
             "&:hover": {
               color: hoverColor,
               backgroundColor: "transparent",
-              border: `1px solid ${hoverColor}`,
             },
           }}
         >

@@ -16,9 +16,9 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import api from "../services/api"; // Replace with your API helper file
+import api from "../services/api";
 import { useNavigate } from "react-router-dom";
-import ProposalEditorAdmin from "./ProposalEditorAdmin"; // We'll nest this, or navigate to a new route
+import ProposalEditorAdmin from "./ProposalEditorAdmin";
 import { useTheme } from "@mui/material/styles";
 
 const AdminUserView = () => {
@@ -28,15 +28,11 @@ const AdminUserView = () => {
   const [expandedClientId, setExpandedClientId] = useState(null);
   const navigate = useNavigate();
   const theme = useTheme();
-
-  // If you want to display ProposalEditorAdmin in-line after selecting a request:
   const [selectedRequestId, setSelectedRequestId] = useState(null);
 
   useEffect(() => {
     const fetchClients = async () => {
       try {
-        // GET /admin/users-with-answers should include each client, their requests,
-        // and optionally "request.proposal" if you add an "include: [Proposal]" in your backend
         const response = await api.get("/admin/users-with-answers");
         setClients(response.data);
       } catch (err) {
@@ -46,18 +42,14 @@ const AdminUserView = () => {
         setLoading(false);
       }
     };
-
     fetchClients();
   }, []);
 
-  // Existing function: handle viewing the Q&A form for a particular client
   const handleViewForm = (clientId) => {
-    // Navigate to the Q&A details view for the client
     navigate(`/admin/user-form/${clientId}`);
   };
 
   const handleOpenProposal = (requestId) => {
-    // Navigate to a new route to view the proposal editor
     navigate(`/proposals/${requestId}`);
   };
 
@@ -91,21 +83,35 @@ const AdminUserView = () => {
   }
 
   return (
-    <Container>
-      <Typography variant="h4" sx={{ mb: 3 }}>
+    <Container
+      maxWidth="false" // Full width container
+      sx={{
+        px: { xs: 1, sm: 2, md: 4 },
+        width: "100%",
+      }}
+    >
+      <Typography variant="h4" sx={{ mb: 3, textAlign: "center" }}>
         Client Submissions
       </Typography>
-      <TableContainer component={Paper}>
+
+      {/* Make Table Responsive */}
+      <TableContainer
+        component={Paper}
+        sx={{
+          width: "100%",
+          overflowX: "auto", // Enables scrolling on small screens
+        }}
+      >
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>
+              <TableCell sx={{ whiteSpace: "nowrap" }}>
                 <strong>Full Name</strong>
               </TableCell>
-              <TableCell>
+              <TableCell sx={{ whiteSpace: "nowrap" }}>
                 <strong>Email</strong>
               </TableCell>
-              <TableCell align="center">
+              <TableCell align="center" sx={{ whiteSpace: "nowrap" }}>
                 <strong>Actions</strong>
               </TableCell>
             </TableRow>
@@ -119,6 +125,11 @@ const AdminUserView = () => {
                   <TableCell>{client.email}</TableCell>
                   <TableCell align="center">
                     <Button
+                      sx={{
+                        minWidth: "80px",
+                        fontSize: { xs: "0.7rem", sm: "0.8rem", md: "0.9rem" },
+                        p: { xs: 0.5, sm: 1 }, // Adjust padding for mobile
+                      }}
                       onClick={() => toggleExpand(client.id)}
                       startIcon={
                         expandedClientId === client.id ? (
@@ -128,9 +139,7 @@ const AdminUserView = () => {
                         )
                       }
                     >
-                      {expandedClientId === client.id
-                        ? "Hide Details"
-                        : "View Details"}
+                      {expandedClientId === client.id ? "Hide" : "View"}
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -144,23 +153,27 @@ const AdminUserView = () => {
                       unmountOnExit
                     >
                       <Box
-                        sx={{ p: 2, backgroundColor: theme.palette.background }}
+                        sx={{
+                          p: 1,
+                          backgroundColor: theme.palette.background.default,
+                          overflowX: "auto",
+                        }}
                       >
                         {client.requests.length > 0 ? (
                           <Table size="small">
                             <TableHead>
                               <TableRow>
-                                <TableCell>
+                                <TableCell sx={{ whiteSpace: "nowrap" }}>
                                   <strong>Project Name</strong>
                                 </TableCell>
-                                <TableCell>
-                                  <strong>Questions Submitted</strong>
+                                <TableCell sx={{ whiteSpace: "nowrap" }}>
+                                  <strong>Qs</strong>
                                 </TableCell>
-                                <TableCell>
+                                <TableCell sx={{ whiteSpace: "nowrap" }}>
                                   <strong>Proposal</strong>
                                 </TableCell>
-                                <TableCell>
-                                  <strong>Actions</strong>
+                                <TableCell sx={{ whiteSpace: "nowrap" }}>
+                                  <strong>Form</strong>
                                 </TableCell>
                               </TableRow>
                             </TableHead>
@@ -177,11 +190,20 @@ const AdminUserView = () => {
                                   <TableCell>
                                     {request.proposal ? (
                                       <Button
+                                        sx={{
+                                          minWidth: "50px",
+                                          padding: { xs: 0.5, sm: 0.5 },
+                                          fontSize: {
+                                            xs: "0.7rem",
+                                            sm: "0.8rem",
+                                            md: "0.9rem",
+                                          },
+                                        }}
                                         onClick={() =>
                                           handleOpenProposal(request.id)
                                         }
                                       >
-                                        View Proposal
+                                        View
                                       </Button>
                                     ) : (
                                       "No Proposal"
@@ -190,10 +212,19 @@ const AdminUserView = () => {
                                   <TableCell>
                                     <Button
                                       variant="contained"
-                                      color="primary"
+                                      color="secondary"
+                                      sx={{
+                                        minWidth: "50px",
+                                        padding: { xs: 0.5, sm: 0.5 },
+                                        fontSize: {
+                                          xs: "0.7rem",
+                                          sm: "0.8rem",
+                                          md: "0.9rem",
+                                        },
+                                      }}
                                       onClick={() => handleViewForm(client.id)}
                                     >
-                                      View Form
+                                      View
                                     </Button>
                                   </TableCell>
                                 </TableRow>
@@ -215,7 +246,7 @@ const AdminUserView = () => {
         </Table>
       </TableContainer>
 
-      {/* If you want to show <ProposalEditorAdmin> in the same page after selecting requestId */}
+      {/* Show ProposalEditorAdmin if a request is selected */}
       {selectedRequestId && (
         <Box sx={{ mt: 4 }}>
           <ProposalEditorAdmin requestId={selectedRequestId} />

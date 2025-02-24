@@ -61,23 +61,30 @@ const ComparisonViewer = ({ requestId }) => {
       elevation={0}
       sx={{
         display: "flex",
+        minWidth: 300,
+        width: "100%",
         flexDirection: "column",
         alignItems: "center",
+        mt: 6,
         pt: 6,
-        m: 2,
+        maxWidth: 1000,
+        justifyContent: "center",
         backgroundColor: theme.palette.background.default,
         borderRadius: 2,
+        overflow: "hidden",
+        border: ".5px solid",
+        borderColor: theme.palette.primary.main,
       }}
     >
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h4" gutterBottom align="center">
         Industry average vs. FormIT comparison
       </Typography>
 
       {/* Show button if comparison hasn't been generated */}
       {!comparisonData && !loading && (
-        <Box textAlign="center" mt={3}>
+        <Box textAlign="center" mt={3} mb={4}>
           <Button
-            variant="contained"
+            variant="outlined"
             color="primary"
             onClick={handleGenerateComparison}
           >
@@ -88,7 +95,13 @@ const ComparisonViewer = ({ requestId }) => {
 
       {/* Show loading animation */}
       {loading && (
-        <Box display="flex" justifyContent="center" alignItems="center" mt={4}>
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          mt={4}
+          mb={4}
+        >
           <CircularProgress />
           <Typography variant="h6" sx={{ ml: 2 }}>
             Generating Comparison...
@@ -105,8 +118,16 @@ const ComparisonViewer = ({ requestId }) => {
 
       {/* Render Comparison Table with Styled Columns */}
       {comparisonData && (
-        <TableContainer component={Box} sx={{ mt: 4, maxWidth: 600 }}>
-          <Table>
+        <TableContainer
+          component={Paper}
+          sx={{
+            mt: 4,
+            maxWidth: 600,
+            borderRadius: 0,
+            overflow: "hidden",
+          }}
+        >
+          <Table sx={{ borderCollapse: "separate" }}>
             <TableHead>
               <TableRow>
                 <TableCell

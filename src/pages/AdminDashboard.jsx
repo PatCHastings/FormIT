@@ -13,11 +13,18 @@ function AdminDashboard() {
   return (
     <Box
       component="main"
-      sx={{ minHeight: "100vh", backgroundColor: "", py: 4 }}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        minHeight: "100vh",
+        backgroundColor: "",
+        py: 4,
+      }}
     >
       <Paper
-        elevation={3}
-        sx={{ p: 4, mb: 4, textAlign: "center", backgroundColor: "" }}
+        elevation={0}
+        sx={{ p: 1, mb: 4, textAlign: "center", backgroundColor: "" }}
       >
         <Tabs value={activeTab} onChange={handleTabChange}>
           <Tab label="Users" />
@@ -27,7 +34,7 @@ function AdminDashboard() {
       </Paper>
 
       {/* Render content based on active tab */}
-      <Box sx={{ p: 4 }}>
+      <Box sx={{ p: 0 }}>
         {activeTab === 0 && <AdminUserView />} {/* Users tab */}
         {activeTab === 1 && <ProposalEditorAdmin />} {/* Projects tab */}
         {activeTab === 2 && <div>Settings Section Coming Soon</div>}

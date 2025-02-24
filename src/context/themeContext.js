@@ -40,7 +40,7 @@ const ThemeContextProvider = ({ children }) => {
         },
         gradients: {
           secondary: mode === "light"
-            ? "linear-gradient(45deg, ##eea215 90%, #34e6dd 90%)"
+            ? "linear-gradient(45deg, #eea215 90%, #34e6dd 90%)"
             : "linear-gradient(-45deg, #242322 30%, #3a3a3a 90%)",
         }, 
         gradient: {

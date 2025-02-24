@@ -49,63 +49,82 @@ const ProposalViewer = () => {
   }, [requestId]);
 
   return (
-    <Paper
-      elevation={0}
+    <Box
       sx={{
-        p: 4,
-        m: 2,
-        backgroundColor: theme.palette.background.default,
-        borderRadius: 2,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        width: "100%",
+        minHeight: "100vh", // Ensures it's centered even with less content
+        p: 2,
       }}
     >
-      <Typography variant="h4" gutterBottom align="center">
-        <FormITsmall /> AI Proposal
-      </Typography>
+      <Paper
+        elevation={0}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          p: 2,
+          maxWidth: 1000,
+          backgroundColor: theme.palette.background.default,
+          borderRadius: 2,
+        }}
+      >
+        <Typography variant="h4" gutterBottom align="center">
+          <FormITsmall /> AI Proposal
+        </Typography>
 
-      {loading && (
-        <Box display="flex" justifyContent="center" alignItems="center" mt={4}>
-          <CircularProgress />
-        </Box>
-      )}
-      {error && <Typography color="error">{error}</Typography>}
+        {loading && (
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            mt={4}
+          >
+            <CircularProgress />
+          </Box>
+        )}
+        {error && <Typography color="error">{error}</Typography>}
 
-      {proposalData && (
-        <>
-          <Typography variant="h6">Project Overview</Typography>
-          <Typography>{proposalData.projectOverview}</Typography>
+        {proposalData && (
+          <>
+            <Typography variant="h6">Project Overview</Typography>
+            <Typography>{proposalData.projectOverview}</Typography>
 
-          <Typography variant="h6" mt={2}>
-            Project Scope
-          </Typography>
-          <Typography>{proposalData.projectScope}</Typography>
+            <Typography variant="h6" mt={2}>
+              Project Scope
+            </Typography>
+            <Typography>{proposalData.projectScope}</Typography>
 
-          <Typography variant="h6" mt={2}>
-            Timeline
-          </Typography>
-          <Typography>{proposalData.timeline}</Typography>
+            <Typography variant="h6" mt={2}>
+              Timeline
+            </Typography>
+            <Typography>{proposalData.timeline}</Typography>
 
-          <Typography variant="h6" mt={2}>
-            Budget
-          </Typography>
-          <Typography>{proposalData.budget}</Typography>
+            <Typography variant="h6" mt={2}>
+              Budget
+            </Typography>
+            <Typography>{proposalData.budget}</Typography>
 
-          {/* Show Comparison Button */}
-          {!showComparison && (
-            <Box textAlign="center" mt={4}>
-              <Button
-                variant="outlined"
-                onClick={() => setShowComparison(true)}
-              >
-                Compare Industry vs FormIT
-              </Button>
-            </Box>
-          )}
+            {/* Show Comparison Button */}
+            {!showComparison && (
+              <Box textAlign="center" mt={4}>
+                <Button
+                  variant="outlined"
+                  onClick={() => setShowComparison(true)}
+                >
+                  Compare Industry vs FormIT
+                </Button>
+              </Box>
+            )}
 
-          {/* Render Comparison Component if Button is Clicked */}
-          {showComparison && <ComparisonViewer requestId={requestId} />}
-        </>
-      )}
-    </Paper>
+            {/* Render Comparison Component if Button is Clicked */}
+            {showComparison && <ComparisonViewer requestId={requestId} />}
+          </>
+        )}
+      </Paper>
+    </Box>
   );
 };
 
