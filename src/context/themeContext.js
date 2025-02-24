@@ -28,6 +28,9 @@ const ThemeContextProvider = ({ children }) => {
           background: {
             default: mode === "light" ? "#f5f5f5" : "#121212", 
           },
+          offBackground: {
+            default: mode === "light" ? "#cecece" : "#2b2b2b", 
+          },
           chart: {
             default: mode === "light" ? "#aa63fa" : "#1ba386", 
           },

@@ -12,6 +12,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  useMediaQuery,
 } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import RadioButtonUncheckedIcon from "@mui/icons-material/RadioButtonUnchecked";
@@ -25,6 +26,7 @@ const ClientForm = () => {
   const [fetchError, setFetchError] = useState(null);
   const navigate = useNavigate();
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   // Tracking step progress
   const [completedSteps, setCompletedSteps] = useState([]);
@@ -249,7 +251,7 @@ const ClientForm = () => {
 
     return (
       <Box>
-        <Typography variant="h4" gutterBottom>
+        <Typography variant="h4" gutterBottom sx={{ mb: 2 }}>
           {stepData.title}
         </Typography>
         {stepData.categories.map((category, catIndex) => (
@@ -307,9 +309,247 @@ const ClientForm = () => {
   }
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "row", height: "100vh" }}>
-      {/* Left side: roadmap */}
-      <Box sx={{ width: "200px", padding: "16px" }}>{renderRoadmap()}</Box>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: isMobile ? "column" : "row",
+        height: "100vh",
+      }}
+    >
+      {isMobile ? (
+        <Box
+          sx={{
+            width: "100%",
+            maxWidth: "600px",
+            mx: "auto",
+            p: 2,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          {/* Step Progress Bar Container */}
+          <Box sx={{ position: "relative", width: "100%", mt: 5 }}>
+            {/* Background Progress Line */}
+            <Box
+              sx={{
+                position: "absolute",
+                top: "50%",
+                left: 0,
+                width: "100%",
+                height: "4px",
+                background: theme.palette.offBackground.default,
+                transform: "translateY(-50%)",
+                zIndex: 0,
+              }}
+            />
+            {/* Progress Line (Completed Steps) */}
+            <Box
+              sx={{
+                position: "absolute",
+                top: "50%",
+                left: 0,
+                width: `${(100 / (steps.length - 1)) * currentStep}%`,
+                height: "4px",
+                background: theme.palette.primary.main,
+                transform: "translateY(-50%)",
+                zIndex: 1,
+                transition: "width 0.4s ease",
+              }}
+            />
+
+            {/* Step Indicators (Clickable) */}
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                position: "relative",
+                zIndex: 2,
+              }}
+            >
+              {steps.map((step, index) => (
+                <Box
+                  key={index}
+                  sx={{
+                    textAlign: "center",
+                    position: "relative",
+                    cursor: "pointer",
+                  }}
+                >
+                  {/* Step Circle */}
+                  <Box
+                    onClick={() => setCurrentStep(index)} // Click to navigate to step
+                    sx={{
+                      width: "40px",
+                      height: "40px",
+                      borderRadius: "50%",
+                      backgroundColor: theme.palette.background.default,
+                      border: `3px solid ${
+                        currentStep === index // If the step is active, apply the hover effect permanently
+                          ? theme.palette.primary.light
+                          : completedSteps.includes(index)
+                          ? theme.palette.primary.main
+                          : theme.palette.offBackground.default
+                      }`,
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      transition: "0.4s ease",
+                      transform:
+                        currentStep === index ? "scale(1.1)" : "scale(1)", // Keep scaled if active
+                      "&:hover": {
+                        border: `3px solid ${theme.palette.primary.light}`,
+                        transform: "scale(1.1)", // Slight enlarge on hover
+                      },
+                    }}
+                  >
+                    {completedSteps.includes(index) ? (
+                      <CheckCircleIcon
+                        sx={{
+                          color: theme.palette.primary.main,
+                          fontSize: "26px",
+                        }}
+                      />
+                    ) : (
+                      <Typography
+                        sx={{
+                          fontSize: "19px",
+                          color: theme.palette.grey[500],
+                        }}
+                      >
+                        {index + 1}
+                      </Typography>
+                    )}
+                  </Box>
+                </Box>
+              ))}
+            </Box>
+          </Box>
+        </Box>
+      ) : (
+        <Box
+          sx={{
+            width: "200px",
+            padding: "16px",
+            borderRight: `1px solid ${theme.palette.divider}`,
+            display: "flex",
+            flexDirection: "row", // Separate progress bar and text
+            alignItems: "flex-start",
+            gap: 2, // Adds space between progress bar and text
+          }}
+        >
+          {/* Progress Bar Container */}
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              position: "relative",
+            }}
+          >
+            {steps.map((step, index) => (
+              <Box
+                key={index}
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                {/* Vertical Connecting Line (Separate from Text) */}
+                {index > 0 && (
+                  <Box
+                    sx={{
+                      width: "4px",
+                      height: "35px",
+                      background:
+                        currentStep >= index
+                          ? theme.palette.primary.main
+                          : theme.palette.offBackground.default,
+                      position: "relative",
+                      zIndex: -1,
+                    }}
+                  />
+                )}
+
+                {/* Step Circle */}
+                <Box
+                  onClick={() => setCurrentStep(index)}
+                  sx={{
+                    width: "40px",
+                    height: "40px",
+                    borderRadius: "50%",
+                    backgroundColor: theme.palette.background.default,
+                    border: `3px solid ${
+                      currentStep === index
+                        ? theme.palette.primary.dark
+                        : completedSteps.includes(index)
+                        ? theme.palette.primary.main
+                        : theme.palette.offBackground.default
+                    }`,
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    transition: "0.4s ease",
+                    transform:
+                      currentStep === index ? "scale(1.1)" : "scale(1)",
+                    "&:hover": {
+                      border: `3px solid ${theme.palette.primary.light}`,
+                      transform: "scale(1.1)", // Slight enlarge on hover
+                    },
+                  }}
+                >
+                  {completedSteps.includes(index) ? (
+                    <CheckCircleIcon
+                      sx={{
+                        color: theme.palette.primary.main,
+                        fontSize: "26px",
+                      }}
+                    />
+                  ) : (
+                    <Typography
+                      sx={{ fontSize: "19px", color: theme.palette.grey[500] }}
+                    >
+                      {index + 1}
+                    </Typography>
+                  )}
+                </Box>
+              </Box>
+            ))}
+          </Box>
+
+          {/* Step Titles Container (Separate from Progress Bar) */}
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              gap: 4,
+            }}
+          >
+            {steps.map((step, index) => (
+              <Typography
+                key={index}
+                variant="body1"
+                sx={{
+                  fontWeight: currentStep === index ? "bold" : "normal",
+                  color:
+                    currentStep === index
+                      ? theme.palette.primary.main
+                      : theme.palette.text.primary,
+                  cursor: "pointer",
+                  textAlign: "left",
+                  mt: "10px",
+                }}
+                onClick={() => setCurrentStep(index)}
+              >
+                {step.title}
+              </Typography>
+            ))}
+          </Box>
+        </Box>
+      )}
 
       {/* Right side: form content */}
       <Box sx={{ flex: 1, padding: "24px" }}>

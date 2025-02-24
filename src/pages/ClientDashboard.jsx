@@ -11,6 +11,7 @@ import {
   AccordionDetails,
   CircularProgress,
   Paper,
+  useMediaQuery,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useNavigate } from "react-router-dom";
@@ -85,6 +86,7 @@ const ClientDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedTab, setSelectedTab] = useState(0);
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   const handleSelectService = (serviceType) => {
     // Navigate to the question flow with a query param or route param
@@ -139,7 +141,9 @@ const ClientDashboard = () => {
       </Typography>
 
       {/* Current Projects Section */}
-      <Accordion sx={{ width: "100%", maxWidth: "1200px", mb: 4 }}>
+      <Accordion
+        sx={{ width: "100%", maxWidth: "1200px", minWidth: "350px", mb: 4 }}
+      >
         <AccordionSummary
           expandIcon={<ExpandMoreIcon />}
           id="current-projects-header"
@@ -159,7 +163,7 @@ const ClientDashboard = () => {
                 fontSize: "1rem",
                 textTransform: "none",
                 borderRadius: "50px",
-                padding: "8px 16px",
+                padding: "8px 6px",
                 transition: "all 0.3s ease",
                 border: `1px solid transparent`,
                 "&:hover": {
@@ -176,7 +180,7 @@ const ClientDashboard = () => {
           >
             <Tab label="Proposals" />
             <Tab label="Roadmaps" />
-            <Tab label="Project Outline" />
+            <Tab label="Outlines" />
           </Tabs>
 
           {selectedTab === 0 && (
