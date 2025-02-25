@@ -117,20 +117,24 @@ function Homepage() {
         <Box
           component="main"
           sx={{
-            minHeight: "100vh",
             display: "flex",
             flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            py: isMobile ? 2 : 4, // Tighter padding on mobile
+            justifyContent: "flex-start",
+            minHeight: "90vh",
+            py: isMobile ? 1 : 4, // Tighter padding on mobile
             transform: isMobile ? "scale(0.8)" : "scale(1)", // Reduce scale for mobile
           }}
         >
-          <Container maxWidth="md">
+          <Container
+            maxWidth="md"
+            sx={{
+              mt: isMobile ? -10 : 0, // Moves everything higher
+            }}
+          >
             <Paper
               elevation={0}
               sx={{
-                p: isMobile ? 2 : 6, // Less padding on mobile
+                p: isMobile ? 1 : 6, // Less padding on mobile
 
                 textAlign: "center",
                 backgroundColor: "transparent",
@@ -172,7 +176,7 @@ function Homepage() {
                       backdropFilter: "blur(10px)",
                     }}
                   >
-                    Your Custom Software Builder.
+                    Streamlined Software Builder.
                   </Typography>
                 </Fade>
               </div>
@@ -183,16 +187,16 @@ function Homepage() {
                   variant="body1"
                   gutterBottom
                   sx={{
-                    fontSize: isMobile ? "1rem" : "1.2rem", // Reduce font size on mobile
+                    fontSize: isMobile ? "1.2rem" : "1.2rem", // Reduce font size on mobile
                     position: "relative",
                     top: isMobile ? "-150px" : "0px",
                     mb: isMobile ? 2 : 4, // Reduce bottom spacing on mobile
                   }}
                 >
-                  Specialized in fast and inexpensive software solutions;
-                  tailored to your business needs. Fill out the form specific to
-                  your project and FormIT will respond with a proposal that will
-                  save you time and money.
+                  Specialized in fast and inexpensive software solutions
+                  leveraging the power of AI. Fill out the form specific to your
+                  project and FormIT will respond with a proposal that will save
+                  you time and money.
                 </Typography>
               </Fade>
 
@@ -235,6 +239,8 @@ function Homepage() {
               sx={{
                 fontWeight: "bold",
                 textAlign: "center",
+                padding: "8px",
+                fontSize: isMobile ? "1.4rem" : "1.9rem", // Smaller font on mobile
                 mb: 4,
               }}
             >
@@ -248,7 +254,7 @@ function Homepage() {
                 maxWidth: "900px",
                 p: 1,
                 textAlign: "center",
-                borderRadius: 4, // Optional: Add rounded corners
+                borderRadius: 2, // Optional: Add rounded corners
                 backgroundColor: "transparent", // Make background transparent
               }}
             >
@@ -284,8 +290,6 @@ function Homepage() {
                         fontSize: "1rem",
                         textTransform: "none",
                         borderRadius: "50px",
-                        padding: "8px 16px",
-
                         transition: "all 0.3s ease",
                         border: `1px solid transparent`,
                         "&:hover": {
@@ -316,7 +320,8 @@ function Homepage() {
                   <Paper
                     elevation={0}
                     sx={{
-                      p: 4,
+                      p: 1,
+
                       backgroundColor: "transparent",
                       textAlign: "center",
                       border: `1px solid ${theme.palette.primary.main}`,
@@ -359,8 +364,8 @@ function Homepage() {
                             sx={{
                               textAlign: "left",
                               py: 2,
+                              pr: 2,
                               backgroundColor: theme.palette.background.default,
-
                               borderBottom:
                                 idx !==
                                 painPoints[selectedIndex].problem.length - 1
@@ -376,6 +381,7 @@ function Homepage() {
                             sx={{
                               textAlign: "left",
                               py: 2,
+                              pl: 1,
                               backgroundColor: theme.palette.background.default,
                               borderBottom:
                                 idx !==
@@ -398,6 +404,105 @@ function Homepage() {
           </Box>
         </Fade>
       </div>
+
+      {/* Demo Section */}
+      <Box
+        sx={{
+          minHeight: "80vh",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          py: 6,
+        }}
+      >
+        <Typography
+          variant="h4"
+          component="h1"
+          sx={{
+            fontWeight: "bold",
+            textAlign: "center",
+            mb: 4,
+          }}
+        >
+          See FormIT in action
+        </Typography>
+
+        <Paper
+          elevation={0}
+          sx={{
+            p: 1,
+            backgroundColor: "transparent",
+            textAlign: "center",
+            borderRadius: 2,
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: isMobile ? "column" : "row",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 2,
+            }}
+          >
+            <Box
+              sx={{
+                width: "100%",
+                maxWidth: "600px",
+                textAlign: "left",
+              }}
+            >
+              <Typography variant="h6" gutterBottom>
+                How FormIT Works
+              </Typography>
+              <Typography variant="body1" gutterBottom>
+                FormIT is a specialized AI software builder that streamlines the
+                development process for small businesses. Our platform utilizes
+                the latest in AI to mitigate the time and cost associated with
+                traditional software development.
+              </Typography>
+              <Typography variant="body1" gutterBottom>
+                Simply fill out the form specific to your project, and FormIT
+                will respond with a detailed proposal that outlines the scope,
+                timeline, and cost of your project. Our goal is to save you time
+                and money by providing affordable software solutions that meet
+                your unique needs.
+              </Typography>
+            </Box>
+          </Box>
+        </Paper>
+      </Box>
+      <div>
+        <Button
+          sx={{
+            borderRadius: "50px",
+            top: isMobile ? "-100px" : "0px",
+          }}
+          type="submit"
+          size={isMobile ? "medium" : "large"} // Smaller button on mobile
+          onClick={() => navigate("/register")}
+        >
+          Get Started
+        </Button>
+      </div>
+
+      {/* Footer Section */}
+      <Box
+        sx={{
+          minHeight: "10vh",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          borderTop: `1px solid ${theme.palette.primary.main}`,
+          color: theme.palette.primary.main,
+        }}
+      >
+        <Typography variant="body1" gutterBottom>
+          © 2025 FormIT. All rights reserved.
+        </Typography>
+      </Box>
     </div>
   );
 }

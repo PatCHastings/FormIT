@@ -13,6 +13,7 @@ import {
   CircularProgress,
   Paper,
   Collapse,
+  useMediaQuery,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
@@ -29,6 +30,8 @@ const AdminUserView = () => {
   const navigate = useNavigate();
   const theme = useTheme();
   const [selectedRequestId, setSelectedRequestId] = useState(null);
+
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   useEffect(() => {
     const fetchClients = async () => {
@@ -84,17 +87,24 @@ const AdminUserView = () => {
 
   return (
     <Container
-      maxWidth="false" // Full width container
+      maxWidth={false}
       sx={{
-        px: { xs: 1, sm: 2, md: 4 },
-        width: "100%",
+        px: isMobile ? 1 : 4, // Less padding on mobile
+        width: isMobile ? "100%" : "900px", // Full width on mobile, fixed width on desktop
       }}
     >
-      <Typography variant="h4" sx={{ mb: 3, textAlign: "center" }}>
+      <Typography
+        variant="h4"
+        sx={{
+          mb: isMobile ? 2 : 3,
+          textAlign: "center",
+          fontSize: isMobile ? "1.5rem" : "2rem",
+        }}
+      >
         Client Submissions
       </Typography>
 
-      {/* Make Table Responsive */}
+      {/* Responsive Table */}
       <TableContainer
         component={Paper}
         sx={{
@@ -102,16 +112,32 @@ const AdminUserView = () => {
           overflowX: "auto", // Enables scrolling on small screens
         }}
       >
-        <Table>
+        <Table size={isMobile ? "small" : "medium"}>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ whiteSpace: "nowrap" }}>
+              <TableCell
+                sx={{
+                  whiteSpace: "nowrap",
+                  fontSize: isMobile ? "0.8rem" : "1rem",
+                }}
+              >
                 <strong>Full Name</strong>
               </TableCell>
-              <TableCell sx={{ whiteSpace: "nowrap" }}>
+              <TableCell
+                sx={{
+                  whiteSpace: "nowrap",
+                  fontSize: isMobile ? "0.8rem" : "1rem",
+                }}
+              >
                 <strong>Email</strong>
               </TableCell>
-              <TableCell align="center" sx={{ whiteSpace: "nowrap" }}>
+              <TableCell
+                align="center"
+                sx={{
+                  whiteSpace: "nowrap",
+                  fontSize: isMobile ? "0.8rem" : "1rem",
+                }}
+              >
                 <strong>Actions</strong>
               </TableCell>
             </TableRow>
@@ -121,14 +147,18 @@ const AdminUserView = () => {
               <React.Fragment key={client.id}>
                 {/* Main Row */}
                 <TableRow>
-                  <TableCell>{client.full_name}</TableCell>
-                  <TableCell>{client.email}</TableCell>
+                  <TableCell sx={{ fontSize: isMobile ? "0.7rem" : "0.9rem" }}>
+                    {client.full_name}
+                  </TableCell>
+                  <TableCell sx={{ fontSize: isMobile ? "0.7rem" : "0.9rem" }}>
+                    {client.email}
+                  </TableCell>
                   <TableCell align="center">
                     <Button
                       sx={{
                         minWidth: "80px",
-                        fontSize: { xs: "0.7rem", sm: "0.8rem", md: "0.9rem" },
-                        p: { xs: 0.5, sm: 1 }, // Adjust padding for mobile
+                        fontSize: isMobile ? "0.7rem" : "0.9rem",
+                        p: isMobile ? 0.3 : 0.8,
                       }}
                       onClick={() => toggleExpand(client.id)}
                       startIcon={
@@ -154,25 +184,41 @@ const AdminUserView = () => {
                     >
                       <Box
                         sx={{
-                          p: 1,
+                          p: isMobile ? 1 : 2,
                           backgroundColor: theme.palette.background.default,
                           overflowX: "auto",
                         }}
                       >
                         {client.requests.length > 0 ? (
-                          <Table size="small">
+                          <Table size={isMobile ? "small" : "medium"}>
                             <TableHead>
                               <TableRow>
-                                <TableCell sx={{ whiteSpace: "nowrap" }}>
-                                  <strong>Project Name</strong>
+                                <TableCell
+                                  sx={{
+                                    fontSize: isMobile ? "0.7rem" : "0.9rem",
+                                  }}
+                                >
+                                  <strong>Project</strong>
                                 </TableCell>
-                                <TableCell sx={{ whiteSpace: "nowrap" }}>
+                                <TableCell
+                                  sx={{
+                                    fontSize: isMobile ? "0.7rem" : "0.9rem",
+                                  }}
+                                >
                                   <strong>Qs</strong>
                                 </TableCell>
-                                <TableCell sx={{ whiteSpace: "nowrap" }}>
+                                <TableCell
+                                  sx={{
+                                    fontSize: isMobile ? "0.7rem" : "0.9rem",
+                                  }}
+                                >
                                   <strong>Proposal</strong>
                                 </TableCell>
-                                <TableCell sx={{ whiteSpace: "nowrap" }}>
+                                <TableCell
+                                  sx={{
+                                    fontSize: isMobile ? "0.7rem" : "0.9rem",
+                                  }}
+                                >
                                   <strong>Form</strong>
                                 </TableCell>
                               </TableRow>
@@ -191,13 +237,11 @@ const AdminUserView = () => {
                                     {request.proposal ? (
                                       <Button
                                         sx={{
-                                          minWidth: "50px",
-                                          padding: { xs: 0.5, sm: 0.5 },
-                                          fontSize: {
-                                            xs: "0.7rem",
-                                            sm: "0.8rem",
-                                            md: "0.9rem",
-                                          },
+                                          minWidth: isMobile ? "50px" : "80px",
+                                          fontSize: isMobile
+                                            ? "0.7rem"
+                                            : "0.9rem",
+                                          p: isMobile ? 0.3 : 0.8,
                                         }}
                                         onClick={() =>
                                           handleOpenProposal(request.id)
@@ -214,13 +258,11 @@ const AdminUserView = () => {
                                       variant="contained"
                                       color="secondary"
                                       sx={{
-                                        minWidth: "50px",
-                                        padding: { xs: 0.5, sm: 0.5 },
-                                        fontSize: {
-                                          xs: "0.7rem",
-                                          sm: "0.8rem",
-                                          md: "0.9rem",
-                                        },
+                                        minWidth: isMobile ? "50px" : "80px",
+                                        fontSize: isMobile
+                                          ? "0.7rem"
+                                          : "0.9rem",
+                                        p: isMobile ? 0.3 : 0.8,
                                       }}
                                       onClick={() => handleViewForm(client.id)}
                                     >
@@ -232,7 +274,10 @@ const AdminUserView = () => {
                             </TableBody>
                           </Table>
                         ) : (
-                          <Typography color="textSecondary">
+                          <Typography
+                            color="textSecondary"
+                            fontSize={isMobile ? "0.8rem" : "1rem"}
+                          >
                             No submissions available
                           </Typography>
                         )}
@@ -246,7 +291,6 @@ const AdminUserView = () => {
         </Table>
       </TableContainer>
 
-      {/* Show ProposalEditorAdmin if a request is selected */}
       {selectedRequestId && (
         <Box sx={{ mt: 4 }}>
           <ProposalEditorAdmin requestId={selectedRequestId} />
