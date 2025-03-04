@@ -41,6 +41,10 @@ function Homepage() {
     threshold: thresholdValue, // Dynamically set based on screen width
   });
 
+  const { ref: demoRef, inView: demoInView } = useInView({
+    threshold: thresholdValue, // Dynamically set based on screen width
+  });
+
   const painPoints = [
     {
       title: "Cost",
@@ -408,84 +412,104 @@ function Homepage() {
       {/* Demo Section */}
       <Box
         sx={{
-          minHeight: "80vh",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
+          minHeight: "80vh",
           py: 6,
+          gap: 3, // Adds space between text content and button
         }}
       >
-        <Typography
-          variant="h4"
-          component="h1"
-          sx={{
-            fontWeight: "bold",
-            textAlign: "center",
-            mb: 4,
-          }}
-        >
-          See FormIT in action
-        </Typography>
-
-        <Paper
-          elevation={0}
-          sx={{
-            p: 1,
-            backgroundColor: "transparent",
-            textAlign: "center",
-            borderRadius: 2,
-          }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: isMobile ? "column" : "row",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: 2,
-            }}
-          >
+        <div ref={demoRef}>
+          <Fade in={demoInView} timeout={1000}>
             <Box
               sx={{
-                width: "100%",
-                maxWidth: "600px",
-                textAlign: "left",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
               }}
             >
-              <Typography variant="h6" gutterBottom>
-                How FormIT Works
+              <Typography
+                variant="h4"
+                component="h1"
+                sx={{
+                  fontWeight: "bold",
+                  textAlign: "center",
+                  mb: 3,
+                }}
+              >
+                See FormIT in action
               </Typography>
-              <Typography variant="body1" gutterBottom>
-                FormIT is a specialized AI software builder that streamlines the
-                development process for small businesses. Our platform utilizes
-                the latest in AI to mitigate the time and cost associated with
-                traditional software development.
-              </Typography>
-              <Typography variant="body1" gutterBottom>
-                Simply fill out the form specific to your project, and FormIT
-                will respond with a detailed proposal that outlines the scope,
-                timeline, and cost of your project. Our goal is to save you time
-                and money by providing affordable software solutions that meet
-                your unique needs.
-              </Typography>
+
+              <Paper
+                elevation={0}
+                sx={{
+                  p: 2,
+                  backgroundColor: "transparent",
+                  textAlign: "center",
+                  borderRadius: 2,
+                  maxWidth: "800px",
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    flexDirection: isMobile ? "column" : "row",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: 3,
+                  }}
+                >
+                  <Box
+                    sx={{
+                      width: "100%",
+                      maxWidth: "600px",
+                      textAlign: "left",
+                    }}
+                  >
+                    <Typography variant="h6" gutterBottom>
+                      How FormIT Works
+                    </Typography>
+                    <Typography variant="body1" gutterBottom>
+                      FormIT is a specialized AI software builder that
+                      streamlines the development process for small businesses.
+                      Our platform utilizes the latest in AI to mitigate the
+                      time and cost associated with traditional software
+                      development.
+                    </Typography>
+                    <Typography variant="body1" gutterBottom>
+                      Simply fill out the form specific to your project, and
+                      FormIT will respond with a detailed proposal that outlines
+                      the scope, timeline, and cost of your project. Our goal is
+                      to save you time and money by providing affordable
+                      software solutions that meet your unique needs.
+                    </Typography>
+                  </Box>
+                </Box>
+              </Paper>
             </Box>
-          </Box>
-        </Paper>
+          </Fade>
+        </div>
+
+        {/* Button Fade-in */}
+        <Fade in={demoInView} timeout={2000}>
+          <Button
+            sx={{
+              borderRadius: "50px",
+              px: 4, // Adds padding for better button sizing
+              py: 1.5,
+            }}
+            type="submit"
+            size={isMobile ? "medium" : "large"} // Smaller button on mobile
+            onClick={() => navigate("/register")}
+          >
+            Get Started
+          </Button>
+        </Fade>
       </Box>
-      <div>
-        <Button
-          sx={{
-            borderRadius: "50px",
-            top: isMobile ? "-100px" : "0px",
-          }}
-          type="submit"
-          size={isMobile ? "medium" : "large"} // Smaller button on mobile
-          onClick={() => navigate("/register")}
-        >
-          Get Started
-        </Button>
-      </div>
 
       {/* Footer Section */}
       <Box
