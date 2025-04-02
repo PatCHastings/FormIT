@@ -49,40 +49,40 @@ function Homepage() {
     {
       title: "Cost",
       problem: [
-        "Small businesses spend an average of $35,000 for basic applications.",
-        "Website development costs can exceed $5,000.",
-        "Maintenance and upgrades to legacy software are expensive, averaging $15,000 annually.",
+        "High costs are incurred from manual software development and repetitive IT workflows.",
+        "Organizations overspend on staffing for routine tasks that could be automated.",
+        "Maintaining outdated IT infrastructure drains budgets with little value return.",
       ],
       solution: [
-        "We offer custom applications starting at just $5,000, tailored to your specific needs.",
-        "Affordable website development packages starting as low as $1,000.",
-        "Cost-effective maintenance plans with free updates for the first year.",
+        "AI-driven agentic workflows reduce development and operational costs by automating repetitive processes.",
+        "Automate documentation, testing, and deployment tasks to minimize staffing overhead.",
+        "Modernize legacy systems through low-cost AI integrations and scalable automation pipelines.",
       ],
     },
     {
       title: "Time",
       problem: [
-        "Traditional software development takes 6-12 months to deliver.",
-        "Delays in project timelines result in lost revenue opportunities.",
-        "Legacy systems often require extensive debugging, wasting valuable time.",
+        "Manual requirement gathering and review processes delay project kickoff.",
+        "Traditional SDLC processes are too slow to meet modern business demands.",
+        "Debugging and QA cycles consume valuable development hours.",
       ],
       solution: [
-        "We use agile development cycles to deliver products in as little as 4 weeks.",
-        "Streamlined processes minimize delays and ensure projects stay on schedule.",
-        "Our modern solutions reduce debugging time with optimized frameworks.",
+        "AI agents accelerate requirement analysis by extracting insights from documentation instantly.",
+        "Automated pipelines streamline the full SDLC, reducing delivery time from months to weeks.",
+        "Leverage AI-powered testing and monitoring tools to reduce QA bottlenecks.",
       ],
     },
     {
       title: "Flexibility",
       problem: [
-        "Legacy systems struggle to scale as your business grows.",
-        "Integrating modern APIs into outdated platforms is often impossible.",
-        "Customizations are limited, restricting your ability to innovate.",
+        "Rigid legacy systems can't adapt to rapid business or technology changes.",
+        "Integrating modern tools into siloed architectures is complex and time-consuming.",
+        "Lack of modularity in existing solutions hinders experimentation and innovation.",
       ],
       solution: [
-        "Our solutions are built to scale seamlessly as your business grows.",
-        "Easily integrate with modern APIs, enabling powerful new functionalities.",
-        "Fully customizable platforms designed to adapt to your evolving needs.",
+        "Agentic workflows allow dynamic adaptation to evolving IT and business needs.",
+        "Seamlessly integrate AI tools and third-party APIs into your existing systems.",
+        "Modular automation frameworks empower continuous innovation without full system overhauls.",
       ],
     },
   ];
@@ -198,9 +198,9 @@ function Homepage() {
                   }}
                 >
                   Specialized in fast and inexpensive software solutions
-                  leveraging the power of AI. Fill out the form specific to your
-                  project and FormIT will respond with a proposal that will save
-                  you time and money.
+                  leveraging the power of AI and agentic workflows. Fill out the
+                  form specific to your project and FormIT will respond with a
+                  proposal that could save you time, money, and tech debt.
                 </Typography>
               </Fade>
 
