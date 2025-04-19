@@ -30,9 +30,7 @@ const ProposalViewer = () => {
 
     const fetchProposal = async () => {
       try {
-        const res = await api.get(`/proposals`, {
-          params: { requestId }, // Pass requestId as query parameter
-        });
+        const res = await api.get(`/proposal/${requestId}`);
         if (res.data && res.data.proposal) {
           setProposalData(res.data.proposal);
         } else {

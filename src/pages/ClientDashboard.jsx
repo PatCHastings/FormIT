@@ -234,51 +234,6 @@ const ClientDashboard = () => {
       </Accordion>
 
       {/* Completed Proposals Section */}
-      <Accordion sx={{ width: "100%", maxWidth: "900px", mb: 4 }}>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          id="completed-proposals-header"
-        >
-          <Typography variant="h6">Completed Proposals</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          {loading ? (
-            <CircularProgress />
-          ) : error ? (
-            <Typography color="error">{error}</Typography>
-          ) : (
-            <Grid container spacing={2}>
-              {proposals.map((proposal) => (
-                <Grid item xs={12} sm={6} key={proposal.id}>
-                  <Paper sx={{ p: 2, borderRadius: 2 }}>
-                    <Typography variant="subtitle1">
-                      {proposal.request
-                        ? proposal.request.projectName
-                        : "Untitled Project"}
-                    </Typography>
-                    <Typography variant="body2" color="textSecondary">
-                      {proposal.status} | Last Updated:{" "}
-                      {new Date(
-                        proposal.last_generated_at
-                      ).toLocaleDateString()}
-                    </Typography>
-                    <Button
-                      variant="contained"
-                      size="small"
-                      sx={{ mt: 2 }}
-                      onClick={() =>
-                        navigate(`/proposal/${proposal.request_id}`)
-                      }
-                    >
-                      View Proposal
-                    </Button>
-                  </Paper>
-                </Grid>
-              ))}
-            </Grid>
-          )}
-        </AccordionDetails>
-      </Accordion>
 
       {/* Service Selection Section */}
       <Box sx={{ p: 4, width: "100%", maxWidth: "900px" }}>

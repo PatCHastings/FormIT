@@ -27,6 +27,7 @@ const ClientForm = () => {
   const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const [isGenerating, setIsGenerating] = useState(false);
 
   // Tracking step progress
   const [completedSteps, setCompletedSteps] = useState([]);
@@ -192,7 +193,7 @@ const ClientForm = () => {
   // User confirms "Finish" => call /proposals/generate
   const confirmFinish = async () => {
     console.log("confirmFinish -> About to POST /generate", requestId);
-    setShowFinishModal(false);
+    setIsGenerating(true);
 
     if (!requestId) {
       alert("No requestId found, cannot generate proposal.");
@@ -214,6 +215,9 @@ const ClientForm = () => {
       } else {
         alert(`Error generating proposal: ${err.message}`);
       }
+    } finally {
+      setIsGenerating(false);
+      setShowFinishModal(false);
     }
   };
 
@@ -578,8 +582,8 @@ const ClientForm = () => {
 
       {/* Confirmation Dialog for "Finish" */}
       <Dialog
-        open={showFinishModal}
-        onClose={() => setShowFinishModal(false)}
+        open={showFinishModal || isGenerating}
+        onClose={() => !isGenerating && setShowFinishModal(false)}
         variant="persistent"
         sx={{
           "& .MuiDialog-paper": {
@@ -587,27 +591,46 @@ const ClientForm = () => {
             borderRadius: "12px",
             backgroundColor: theme.windows.primary,
             backdropFilter: "blur(10px)",
-            border: "1px solid", // Optional border
+            border: "1px solid",
             borderColor: theme.palette.primary.main,
             boxShadow: "0 4px 20px rgba(0, 0, 0, 0.2)",
           },
         }}
       >
-        <DialogTitle>Generate Proposal?</DialogTitle>
+        <DialogTitle>
+          {isGenerating ? "Generating Your Proposal..." : "Generate Proposal?"}
+        </DialogTitle>
+
         <DialogContent>
-          <DialogContentText>
-            Clicking "Confirm" will submit your answers to our AI and generate a
-            preliminary proposal for your review. This is rate-limited to once
-            every 15 minutes, so review your answers to ensure they accurately
-            describe your project goals. Are you sure you want to proceed?
-          </DialogContentText>
+          {isGenerating ? (
+            <>
+              <DialogContentText sx={{ mb: 2 }}>
+                FormIT AI Agent is generating a preliminary proposal. This may
+                take a few moments..
+              </DialogContentText>
+              <Box display="flex" justifyContent="center">
+                <CircularProgress color="primary" />
+              </Box>
+            </>
+          ) : (
+            <DialogContentText>
+              Clicking "Confirm" will submit your answers to our AI and generate
+              a preliminary proposal for your review. This is rate-limited to
+              once every 15 minutes, so review your answers to ensure they
+              accurately describe your project goals. Are you sure you want to
+              proceed?
+            </DialogContentText>
+          )}
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setShowFinishModal(false)}>Cancel</Button>
-          <Button onClick={confirmFinish} autoFocus>
-            Confirm
-          </Button>
-        </DialogActions>
+
+        {!isGenerating && (
+          <DialogActions>
+            <Button onClick={() => setShowFinishModal(false)}>Cancel</Button>
+            <Button onClick={confirmFinish} autoFocus>
+              Confirm
+            </Button>
+          </DialogActions>
+        )}
       </Dialog>
     </Box>
   );

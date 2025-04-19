@@ -76,7 +76,7 @@ const RequestsList = () => {
               {request.proposal ? (
                 <Button
                   variant="outlined"
-                  onClick={() => navigate(`/proposal/${request.proposal.id}`)}
+                  onClick={() => navigate(`/proposal/${request.id}`)}
                 >
                   View Proposal
                 </Button>

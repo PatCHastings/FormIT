@@ -33,14 +33,9 @@ import ChangePassword from "../pages/ChangePassword";
 const NAV_ITEMS = {
   admin: [
     { title: "Admin Dashboard", icon: <DashboardIcon />, path: "/admin" },
-    { title: "Orders", icon: <DescriptionIcon />, path: "/orders" },
-    { title: "Reports", icon: <BarChartIcon />, path: "/reports" },
-    { title: "Integrations", icon: <LayersIcon />, path: "/integrations" },
   ],
   client: [
     { title: "Client Dashboard", icon: <DashboardIcon />, path: "/client" },
-    { title: "My Project", icon: <DescriptionIcon />, path: "/my-orders" },
-    { title: "Analytics", icon: <BarChartIcon />, path: "/analytics" },
   ],
 };
 
